@@ -2822,7 +2822,7 @@ async function quickLoadSchedule(){
     ['fees'].forEach(k=>{if(data[k]!==undefined)DB[k]=data[k];});
     load();save();renderSched();
     const dt=data._exportDate?new Date(data._exportDate).toLocaleString('zh-TW'):'';
-    toast('✓ 班表已更新'+(dt?' ('+dt+')'):'','s');
+    toast('✓ 班表已更新'+(dt?' ('+dt+')':''),'s');
   }catch(e){toast('載入失敗：'+e.message,'e');}
 }
 
