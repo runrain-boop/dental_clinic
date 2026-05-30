@@ -1,0 +1,2984 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>牙醫診所管理系統</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@300;400;500;600;700&family=DM+Mono:wght@400;500&display=swap');
+:root{
+  --bg:#f5f4f0;--sf:#fff;--sf2:#f0ede6;--bd:#ddd9d0;--bd2:#c8c3b8;
+  --tx:#1a1814;--tx2:#5a5650;--tx3:#8a8680;
+  --ac:#2d6a4f;--ac2:#40916c;--ac3:#d8f3dc;
+  --rd:#c0392b;--rd2:#fde8e6;--wn:#b7791f;--wn2:#fef3c7;
+  --hl:#7c3aed;--hl2:#ede9fe;
+  --sh:0 1px 3px rgba(0,0,0,.08),0 4px 12px rgba(0,0,0,.04);
+  --sh2:0 2px 8px rgba(0,0,0,.12),0 8px 24px rgba(0,0,0,.06);
+  --r:10px;--r2:6px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:'Noto Sans TC',sans-serif;background:var(--bg);color:var(--tx);font-size:14px;line-height:1.6}
+.app{display:flex;height:100vh;overflow:hidden}
+
+/* SIDEBAR */
+.sb{width:210px;background:var(--tx);color:#fff;display:flex;flex-direction:column;flex-shrink:0;overflow-y:auto}
+.sb-logo{padding:20px 16px 14px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sb-logo h1{font-size:14px;font-weight:700;line-height:1.4}
+.sb-logo span{font-size:10px;color:rgba(255,255,255,.4)}
+.ng{padding:10px 0}
+.nl{font-size:10px;letter-spacing:.1em;color:rgba(255,255,255,.35);padding:3px 14px 5px;text-transform:uppercase}
+.ni{display:flex;align-items:center;gap:8px;padding:8px 14px;cursor:pointer;color:rgba(255,255,255,.62);font-size:13px;transition:all .15s;border-left:2px solid transparent}
+.ni:hover{background:rgba(255,255,255,.06);color:rgba(255,255,255,.9)}
+.ni.active{background:rgba(45,106,79,.3);color:#fff;border-left-color:var(--ac2);font-weight:500}
+.ni .ico{font-size:14px;width:16px;text-align:center}
+
+/* MAIN */
+.main{flex:1;display:flex;flex-direction:column;overflow:hidden}
+.topbar{background:var(--sf);border-bottom:1px solid var(--bd);padding:0 20px;height:54px;display:flex;align-items:center;gap:12px;flex-shrink:0}
+.topbar-title{font-size:15px;font-weight:600;flex:1}
+.content{flex:1;overflow-y:auto;padding:18px 20px}
+
+/* BTNS */
+.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 14px;border-radius:var(--r2);font-size:13px;font-weight:500;cursor:pointer;border:1px solid transparent;transition:all .15s;font-family:inherit;line-height:1.2}
+.bp{background:var(--ac);color:#fff;border-color:var(--ac)}.bp:hover{background:var(--ac2)}
+.bs{background:var(--sf);color:var(--tx);border-color:var(--bd2)}.bs:hover{background:var(--sf2)}
+.bd2{background:var(--rd2);color:var(--rd);border-color:#f5c6c2}.bd2:hover{background:#fbd5d1}
+.bw{background:var(--wn2);color:var(--wn);border-color:#fcd34d}.bw:hover{background:#fde68a}
+.bsm{padding:3px 10px;font-size:12px}.bxs{padding:2px 8px;font-size:11px}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+
+/* CARD */
+.card{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh)}
+.ch{padding:14px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between}
+.ct{font-size:14px;font-weight:600}
+.cb{padding:18px}
+
+/* FORM */
+.fg{margin-bottom:12px}
+.fl{display:block;font-size:12px;font-weight:500;color:var(--tx2);margin-bottom:4px}
+.fc{width:100%;padding:7px 11px;border:1px solid var(--bd2);border-radius:var(--r2);font-size:13px;font-family:inherit;color:var(--tx);background:var(--sf);transition:border-color .15s;outline:none}
+.fc:focus{border-color:var(--ac2);box-shadow:0 0 0 3px rgba(64,145,108,.12)}
+select.fc{cursor:pointer}
+.fr2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.fr3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+.fh{font-size:11px;color:var(--tx3);margin-top:3px}
+
+/* TABLE */
+table{width:100%;border-collapse:collapse}
+th,td{padding:8px 11px;text-align:left;border-bottom:1px solid var(--bd);font-size:13px}
+th{background:var(--sf2);font-weight:600;font-size:11px;color:var(--tx2);white-space:nowrap}
+tr:last-child td{border-bottom:none}
+
+/* BADGE */
+.badge{display:inline-block;padding:2px 8px;border-radius:20px;font-size:11px;font-weight:600}
+.bg{background:var(--ac3);color:var(--ac)}.brd{background:var(--rd2);color:var(--rd)}
+.bbl{background:#dbeafe;color:#1d4ed8}.byw{background:var(--wn2);color:var(--wn)}
+.bpu{background:var(--hl2);color:var(--hl)}
+
+/* MODAL */
+.mo{position:fixed;inset:0;background:rgba(0,0,0,.48);display:flex;align-items:center;justify-content:center;z-index:1000;padding:20px}
+.md{background:var(--sf);border-radius:var(--r);box-shadow:var(--sh2);width:100%;max-width:540px;max-height:90vh;display:flex;flex-direction:column}
+.md-lg{max-width:800px}.md-sm{max-width:420px}
+.mh{padding:16px 18px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.mt2{font-size:15px;font-weight:600}
+.mb{padding:18px;overflow-y:auto;flex:1}
+.mf{padding:12px 18px;border-top:1px solid var(--bd);display:flex;justify-content:flex-end;gap:8px;flex-shrink:0}
+.xb{background:none;border:none;cursor:pointer;color:var(--tx3);font-size:20px;line-height:1;padding:2px}.xb:hover{color:var(--tx)}
+
+/* TOAST */
+.tc2{position:fixed;bottom:18px;right:18px;z-index:9999;display:flex;flex-direction:column;gap:8px}
+.ts{background:var(--tx);color:#fff;padding:9px 15px;border-radius:var(--r2);font-size:13px;box-shadow:var(--sh2);animation:sli .2s ease}
+.ts.s{background:var(--ac)}.ts.e{background:var(--rd)}.ts.w{background:var(--wn)}
+@keyframes sli{from{transform:translateX(100%);opacity:0}to{transform:translateX(0);opacity:1}}
+
+/* SCHEDULE */
+.wknav{display:flex;align-items:center;gap:10px;background:var(--sf);padding:10px 14px;border-radius:var(--r);border:1px solid var(--bd);margin-bottom:14px;box-shadow:var(--sh);flex-wrap:wrap}
+.wklbl{font-size:14px;font-weight:600;flex:1;text-align:center;min-width:200px}
+.clinsel{display:flex;align-items:center;gap:6px;padding:6px 12px;background:var(--sf2);border-radius:var(--r);border:1px solid var(--bd)}
+
+.sgrid{background:var(--sf);border-radius:var(--r);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.shdr{display:grid;grid-template-columns:70px repeat(7,1fr);background:var(--sf2);border-bottom:2px solid var(--bd)}
+.sdh{padding:9px 6px;text-align:center;border-right:1px solid var(--bd);font-size:12px;font-weight:600}
+.sdh:last-child{border-right:none}
+.dn{display:block;font-size:13px}.dd{font-size:10px;color:var(--tx2);font-weight:400}
+.sdh.sat .dn{color:#2563eb}.sdh.sun .dn{color:var(--rd)}
+.sdh.hol{background:var(--hl2)}.sdh.hol .dn{color:var(--hl)}
+.ssess{display:grid;grid-template-columns:70px repeat(7,1fr);border-bottom:1px solid var(--bd)}
+.ssess:last-child{border-bottom:none}
+.slbl{display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700;background:var(--sf2);border-right:2px solid var(--bd2);color:var(--ac)}
+.scell{border-right:1px solid var(--bd);padding:5px;min-height:115px;cursor:pointer;transition:background .1s}
+.scell:last-child{border-right:none}.scell:hover{background:#f8fffc}
+.scell.hc{background:#faf7ff}.scell.wc{background:#fafeff}
+.scell.locked{cursor:default;opacity:.7;background:var(--sf2)!important}
+.doc-grp{border:1px solid #bfdbfe;border-radius:4px;padding:2px 4px;margin-bottom:2px;background:#f0f7ff}
+.doc-grp-hd{margin-bottom:1px}
+.doc-grp-as{display:flex;flex-wrap:wrap;gap:2px;padding-left:2px}
+.chip{display:inline-flex;align-items:center;border-radius:3px;padding:1px 5px;font-size:11px;font-weight:500}
+.dr{background:#dbeafe;color:#1e40af}.as{background:var(--ac3);color:var(--ac)}
+.ct2{background:var(--wn2);color:var(--wn)}.fl{background:#fce7f3;color:#9d174d}
+
+/* CELL MODAL */
+.clin-tab{display:flex;gap:3px;flex-wrap:wrap;margin-bottom:0;}
+.clin-tab-item{
+  padding:7px 16px;cursor:pointer;font-size:13px;font-weight:600;
+  border-radius:8px 8px 0 0;white-space:nowrap;transition:all .15s;
+  border:2px solid transparent;border-bottom:none;
+  position:relative;user-select:none;
+}
+/* The colored panel area below tabs that changes with active tab */
+.clin-panel{
+  border:2px solid var(--bd);border-top:none;border-radius:0 0 var(--r2) var(--r2);
+  padding:14px;margin-bottom:14px;transition:background .2s,border-color .2s;
+}
+.doc-grp-sec{border:1px solid var(--bd);border-radius:var(--r2);margin-bottom:7px;overflow:hidden}
+.doc-grp-hd2{display:flex;align-items:center;gap:8px;padding:7px 11px;background:var(--sf2);border-bottom:1px solid var(--bd)}
+.doc-grp-bd{padding:7px 11px;display:flex;flex-wrap:wrap;gap:4px}
+.tag{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;background:var(--sf);border:1px solid var(--bd2);color:var(--tx2);transition:all .1s;margin:1px}
+.tag:hover{border-color:var(--ac2);color:var(--ac)}
+.tag.tdr{background:#dbeafe;border-color:#93c5fd;color:#1e40af}
+.tag.tas{background:var(--ac3);border-color:var(--ac2);color:var(--ac)}
+.tag.tct{background:var(--wn2);border-color:#fcd34d;color:var(--wn)}
+.tag.tfl{background:#fce7f3;border-color:#f9a8d4;color:#9d174d}
+.tag-sel{display:flex;flex-wrap:wrap;gap:4px;padding:7px;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd);min-height:38px}
+
+/* PAYROLL BOXES */
+.pinp{width:100%;padding:4px 6px;border:1px solid var(--bd2);border-radius:4px;font-size:12px;text-align:right;font-family:'DM Mono',monospace;background:var(--sf)}
+.pinp:focus{outline:none;border-color:var(--ac2)}
+.pinp:disabled{background:var(--sf2);color:var(--tx3)}
+.pbox{border:2px solid var(--bd);border-radius:var(--r);margin-bottom:12px;overflow:hidden}
+.pbox.settled{border-color:var(--ac2);background:#f8fff8}
+.pbh{background:var(--sf2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--bd)}
+.pbn{font-weight:700;font-size:15px}
+.pbt{font-size:18px;font-weight:700;font-family:'DM Mono',monospace}
+.pcl{font-size:11px;color:var(--tx3);margin-bottom:3px;font-weight:500}
+.pos{color:var(--ac)}.neg{color:var(--rd)}
+
+/* SETTLED OVERLAY */
+.settled-banner{background:var(--ac3);border:1px solid var(--ac2);border-radius:var(--r2);padding:10px 16px;display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+
+/* STATS */
+.stgrid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px}
+.stcard{background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:14px;box-shadow:var(--sh)}
+.stl{font-size:10px;color:var(--tx2);font-weight:500;text-transform:uppercase;letter-spacing:.05em}
+.stv{font-size:22px;font-weight:700;margin-top:3px;font-family:'DM Mono',monospace}
+.sts{font-size:11px;color:var(--tx3);margin-top:2px}
+
+/* CHECK */
+.ckg{display:flex;align-items:center;gap:8px;cursor:pointer}
+.ckg input[type=checkbox]{width:15px;height:15px;accent-color:var(--ac);cursor:pointer}
+.hidden{display:none!important}
+.page-sec{display:none}.page-sec.active{display:block}
+.ibox{background:var(--ac3);border:1px solid var(--ac2);border-radius:var(--r2);padding:9px 13px;font-size:12px;color:var(--ac);margin-bottom:11px}
+.wbox{background:var(--wn2);border:1px solid #fcd34d;border-radius:var(--r2);padding:9px 13px;font-size:12px;color:var(--wn);margin-bottom:14px}
+.ded-item{background:var(--sf2);border-radius:var(--r2);padding:11px;margin-bottom:7px;border:1px solid var(--bd)}
+.pair-item{display:flex;align-items:center;gap:8px;padding:6px 10px;background:var(--sf2);border-radius:var(--r2);margin-bottom:4px;border:1px solid var(--bd)}
+.sec-t{font-size:17px;font-weight:700;margin-bottom:3px}
+.sec-s{font-size:13px;color:var(--tx2);margin-bottom:18px}
+
+/* ── MOBILE MODE ─────────────────────────────── */
+.mob-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--sf);border-top:1px solid var(--bd);z-index:200;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.mob-nav-inner{display:flex;min-width:max-content}
+.mob-ni{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:8px 14px 6px;cursor:pointer;color:var(--tx3);min-width:62px;gap:2px;transition:color .15s;border-top:2px solid transparent;border-bottom:none;border-left:none;border-right:none;background:none;font-family:inherit}
+.mob-ni.active{color:var(--ac);border-top-color:var(--ac)}
+.mob-ni .mi{font-size:20px}
+.mob-ni span{font-size:9px;white-space:nowrap}
+body.mobile-mode .sb{display:none}
+body.mobile-mode .main{padding-bottom:62px}
+body.mobile-mode .content{padding:12px}
+body.mobile-mode .mob-nav{display:block}
+body.mobile-mode .stgrid{grid-template-columns:repeat(2,1fr)!important}
+body.mobile-mode .fr2,body.mobile-mode .fr3{grid-template-columns:1fr}
+body.mobile-mode .sgrid{overflow-x:auto}
+body.mobile-mode .shdr,body.mobile-mode .ssess{min-width:480px}
+body.mobile-mode .md{width:min(500px,calc(100vw - 16px));max-height:92vh}
+</style>
+</head>
+<body>
+<div class="app">
+<!-- SIDEBAR -->
+<aside class="sb">
+  <div class="sb-logo">
+    <h1>牙醫診所<br>管理系統</h1>
+    <span>Dental Clinic System</span>
+  </div>
+  <nav>
+    <div class="ng">
+      <div class="nl">排班管理</div>
+      <div class="ni active" onclick="showPage('schedule')"><span class="ico">📅</span>班表排班</div>
+    </div>
+    <div class="ng">
+      <div class="nl">薪資管理</div>
+      <div class="ni" onclick="showPage('payroll')"><span class="ico">💰</span>月薪結算</div>
+      <div class="ni" onclick="showPage('history')"><span class="ico">📂</span>結算紀錄</div>
+    </div>
+    <div class="ng">
+      <div class="nl">個人查詢</div>
+      <div class="ni" onclick="showPage('myshift')"><span class="ico">👤</span>個人班表</div>
+    </div>
+    <div class="ng">
+      <div class="nl">系統設定</div>
+      <div class="ni" onclick="showPage('settings-clinic')"><span class="ico">🏥</span>診所設定</div>
+      <div class="ni" onclick="showPage('settings-doctor')"><span class="ico">🦷</span>醫師設定</div>
+      <div class="ni" onclick="showPage('settings-staff')"><span class="ico">👩</span>助理設定</div>
+      <div class="ni" onclick="showPage('settings-fee')"><span class="ico">⚙️</span>費用設定</div>
+      <div class="ni" onclick="showPage('settings-holiday')"><span class="ico">🎌</span>國定假日</div>
+      <div class="ni" onclick="showPage('settings-admin')"><span class="ico">🔑</span>管理者設定</div>
+      <div class="ni" onclick="showPage('settings-backup')"><span class="ico">💾</span>資料備份</div>
+    </div>
+  </nav>
+</aside>
+
+<!-- MAIN -->
+<main class="main">
+  <div class="topbar">
+    <div class="topbar-title" id="page-title">班表排班</div>
+    <div id="topbar-extra" style="display:flex;gap:8px;align-items:center;"></div>
+    <button id="viewmode-btn" class="btn bs bsm" onclick="toggleViewMode()">📱 手機版</button>
+  </div>
+  <div class="content">
+
+    <!-- SCHEDULE -->
+    <div class="page-sec active" id="page-schedule">
+      <div class="wknav">
+        <button class="btn bs bsm" onclick="prevWeek()">◀ 上週</button>
+        <div class="wklbl" id="week-label">載入中...</div>
+        <button class="btn bs bsm" onclick="nextWeek()">下週 ▶</button>
+        <button class="btn bs bsm" onclick="addWeek()">＋ 新增週</button>
+        <button class="btn bw bsm" onclick="copyPrevWeek()" title="將上一週的班表複製到本週">📋 帶入上週</button>
+        <button class="btn bs bsm" onclick="printSched()">🖨 列印</button>
+      </div>
+      <div id="clin-legend" style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px;align-items:center;"></div>
+      <!-- Weekly staff session count panel -->
+      <div id="weekly-staff-counts" style="margin-bottom:10px;"></div>
+      <div id="schedule-container"></div>
+    </div>
+
+    <!-- PAYROLL -->
+    <div class="page-sec" id="page-payroll">
+      <div class="sec-t">月薪結算</div>
+      <div class="sec-s">依月份統計診次薪資，確定結算後鎖定並更新員工代扣餘額</div>
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap;">
+        <label style="font-size:13px;font-weight:500;">薪資月份：</label>
+        <select id="pr-year" class="fc" style="width:88px;"></select>
+        <select id="pr-month" class="fc" style="width:68px;"></select>
+        <button class="btn bp bsm" onclick="calcPayroll()">📊 試算薪資</button>
+        <button class="btn bs bsm" onclick="printPayslips()">🖨 列印薪資條</button>
+        <button class="btn bw bsm" id="settle-btn" onclick="confirmSettle()">✅ 確定結算</button>
+        <button class="btn bd2 bsm hidden" id="unsettle-btn" onclick="unsettle()">🔓 取消結算（管理者）</button>
+      </div>
+      <div class="wbox">⚠️ 修改「跟刀次數」、「打卡分鐘」或「加班分鐘」後，請按「📊 試算薪資」金額才會更新。</div>
+      <div id="settle-banner" class="hidden"></div>
+      <div class="stgrid" id="pr-stats"></div>
+      <div id="pr-boxes"></div>
+    </div>
+
+    <!-- HISTORY -->
+    <div class="page-sec" id="page-history">
+      <div class="sec-t">結算紀錄</div>
+      <div class="sec-s">已確定結算的月份紀錄，資料唯讀</div>
+      <div id="history-list"></div>
+    </div>
+
+    <!-- MY SHIFT -->
+    <div class="page-sec" id="page-myshift">
+      <div class="sec-t">個人班表</div>
+      <div class="sec-s">選擇姓名查看個人排班，醫師與助理可自行確認出勤時段</div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="cb" style="display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding:12px 16px">
+          <label style="font-size:13px;font-weight:500;white-space:nowrap">選擇人員：</label>
+          <select id="ms-person" class="fc" style="width:180px" onchange="renderMyShift()">
+            <option value="">— 請選擇 —</option>
+          </select>
+        </div>
+      </div>
+      <div id="ms-wknav" class="wknav" style="display:none">
+        <button class="btn bs bsm" onclick="msWkPrev()">◀ 上週</button>
+        <div class="wklbl" id="ms-week-label"></div>
+        <button class="btn bs bsm" onclick="msWkNext()">下週 ▶</button>
+      </div>
+      <div id="ms-grid"></div>
+    </div>
+
+    <!-- CLINIC SETTINGS -->
+    <div class="page-sec" id="page-settings-clinic">
+      <div class="sec-t">診所設定</div>
+      <div class="sec-s">新增診所，醫師與助理可指定所屬診所</div>
+      <div class="card">
+        <div class="ch"><div class="ct">診所列表</div>
+          <button class="btn bp bsm" onclick="openClinicModal()">＋ 新增診所</button>
+        </div>
+        <div style="padding:0">
+          <table><thead><tr><th>診所名稱</th><th>說明</th><th>操作</th></tr></thead>
+          <tbody id="clinic-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- DOCTOR SETTINGS -->
+    <div class="page-sec" id="page-settings-doctor">
+      <div class="sec-t">醫師設定</div>
+      <div class="sec-s">設定醫師姓名、簡稱與所屬診所</div>
+      <div class="card">
+        <div class="ch"><div class="ct">醫師列表</div>
+          <button class="btn bp bsm" onclick="openDoctorModal()">＋ 新增醫師</button>
+        </div>
+        <div style="padding:0">
+          <table><thead><tr><th>簡稱</th><th>姓名</th><th>所屬診所</th><th>操作</th></tr></thead>
+          <tbody id="doctor-tbody"></tbody></table>
+        </div>
+      </div>
+    </div>
+
+    <!-- STAFF SETTINGS -->
+    <div class="page-sec" id="page-settings-staff">
+      <div class="sec-t">助理設定</div>
+      <div class="sec-s">設定助理資料、跟診加給、健保、代扣項目</div>
+      <div class="card">
+        <div class="ch"><div class="ct">助理列表</div>
+          <button class="btn bp bsm" onclick="openStaffModal()">＋ 新增助理</button>
+        </div>
+        <div style="overflow-x:auto">
+          <table style="min-width:960px">
+            <thead><tr><th>簡稱</th><th>姓名</th><th>診所</th><th>健保</th><th>人數</th><th>固定加給</th><th>診次費</th><th>跟診配對</th><th>代扣項目</th><th>剩餘代扣</th><th>操作</th></tr></thead>
+            <tbody id="staff-tbody"></tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+
+    <!-- FEE SETTINGS -->
+    <div class="page-sec" id="page-settings-fee">
+      <div class="sec-t">費用設定</div>
+      <div class="sec-s">設定各項薪資計算基準</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px">
+        <div class="card"><div class="ch"><div class="ct">基本費用</div></div><div class="cb" id="fee-form"></div></div>
+        <div class="card"><div class="ch"><div class="ct">計算說明</div></div><div class="cb" id="fee-prev"></div></div>
+      </div>
+    </div>
+
+    <!-- HOLIDAY SETTINGS -->
+    <div class="page-sec" id="page-settings-holiday">
+      <div class="sec-t">國定假日設定</div>
+      <div class="sec-s">國定假日比照假日計薪</div>
+      <div style="display:flex;gap:14px;flex-wrap:wrap">
+        <div class="card" style="flex:1;min-width:280px">
+          <div class="ch">
+            <div class="ct">假日列表</div>
+            <div style="display:flex;gap:7px">
+              <select id="hol-yr" class="fc" style="width:88px" onchange="renderHolPage()"></select>
+              <button class="btn bp bsm" onclick="openHolModal()">＋ 新增</button>
+            </div>
+          </div>
+          <div style="padding:0">
+            <table><thead><tr><th>日期</th><th>名稱</th><th>操作</th></tr></thead>
+            <tbody id="hol-tbody"></tbody></table>
+          </div>
+        </div>
+        <div class="card" style="width:230px">
+          <div class="ch"><div class="ct">快速匯入</div></div>
+          <div class="cb">
+            <div style="display:flex;gap:7px;margin-bottom:9px">
+              <select id="tw-hol-yr" class="fc" style="width:88px"></select>
+              <button class="btn bs bsm" onclick="importTWHol()">匯入</button>
+            </div>
+            <p style="font-size:12px;color:var(--tx2)">匯入台灣常見國定假日</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ADMIN SETTINGS -->
+    <div class="page-sec" id="page-settings-admin">
+      <div class="sec-t">管理者設定</div>
+      <div class="sec-s">設定管理者密碼（用於取消已結算薪資）</div>
+      <div class="card" style="max-width:440px">
+        <div class="ch"><div class="ct">管理者密碼</div></div>
+        <div class="cb">
+          <div class="fg"><label class="fl">目前密碼驗證</label><input type="password" class="fc" id="admin-cur-pw" placeholder="輸入目前密碼（預設空白）"></div>
+          <div class="fg"><label class="fl">新密碼</label><input type="password" class="fc" id="admin-new-pw" placeholder="輸入新密碼"></div>
+          <div class="fg"><label class="fl">確認新密碼</label><input type="password" class="fc" id="admin-new-pw2" placeholder="再次輸入新密碼"></div>
+          <button class="btn bp" onclick="saveAdminPw()">更新密碼</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACKUP / EXPORT -->
+    <div class="page-sec" id="page-settings-backup">
+      <div class="sec-t">資料備份與匯出</div>
+      <div class="sec-s">依年度匯出備份，或匯入還原資料，並可清除舊年度資料</div>
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><div class="ct">🔄 自動備份</div></div>
+        <div class="cb">
+          <div class="ibox" style="margin-bottom:10px">每次關閉網頁時自動儲存備份至瀏覽器。點下方按鈕可下載最近一次的自動備份檔。</div>
+          <div id="auto-backup-info" style="font-size:12px;color:var(--tx2);margin-bottom:10px"></div>
+          <button class="btn bp" onclick="downloadAutoBackup()">⬇️ 下載最近自動備份</button>
+        </div>
+      </div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-bottom:14px;">
+        <div class="card">
+          <div class="ch"><div class="ct">📤 匯出備份</div></div>
+          <div class="cb">
+            <div class="fg"><label class="fl">選擇年度</label><select id="export-year" class="fc" style="width:110px;"></select></div>
+            <div class="fg"><label class="fl">匯出範圍</label>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+                <label class="ckg"><input type="radio" name="export-scope" value="year" checked> 僅選定年度（排班＋薪資）</label>
+                <label class="ckg"><input type="radio" name="export-scope" value="all"> 全部資料（所有年度＋設定）</label>
+              </div>
+            </div>
+            <div class="ibox" style="margin-top:8px">匯出 JSON 備份檔，可存入電腦或雲端。</div>
+            <button class="btn bp" onclick="exportData()">📤 匯出備份檔</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="ch"><div class="ct">📥 匯入還原</div></div>
+          <div class="cb">
+            <div class="fg"><label class="fl">選擇備份檔案（.json）</label><input type="file" id="import-file" accept=".json" class="fc" style="padding:6px"></div>
+            <div class="fg"><label class="fl">匯入模式</label>
+              <div style="display:flex;flex-direction:column;gap:6px;margin-top:4px">
+                <label class="ckg"><input type="radio" name="import-mode" value="merge" checked> 合併（保留現有，補入備份差異）</label>
+                <label class="ckg"><input type="radio" name="import-mode" value="replace"> 完全取代（備份覆蓋全部現有資料）</label>
+              </div>
+            </div>
+            <div class="wbox" style="margin-top:8px">「完全取代」會清除所有現有資料，請謹慎。</div>
+            <button class="btn bw" onclick="importData()">📥 匯入備份檔</button>
+          </div>
+        </div>
+      </div>
+      <!-- URL LOAD -->
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><div class="ct">🌐 共用班表（GitHub Pages）</div></div>
+        <div class="cb">
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;flex-wrap:wrap">
+            <!-- 院長端 -->
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:6px">① 院長：發布班表</div>
+              <div class="fg">
+                <label class="fl">GitHub Repository</label>
+                <input type="text" id="gh-repo" class="fc" placeholder="例：johndoe/clinic-schedule" oninput="saveGHSettings()">
+              </div>
+              <div class="fg">
+                <label class="fl">Personal Access Token
+                  <a href="https://github.com/settings/tokens/new?scopes=repo&description=診所班表" target="_blank" style="font-weight:400;color:var(--ac2);margin-left:6px;font-size:11px">→ 點此建立 Token</a>
+                </label>
+                <input type="password" id="gh-token" class="fc" placeholder="ghp_xxxxxxxxxxxx" oninput="saveGHSettings()">
+                <div class="fh">Token 存在本機瀏覽器，不會隨資料匯出</div>
+              </div>
+              <button class="btn bp" onclick="publishToGitHub()">🚀 一鍵發布班表至 GitHub</button>
+              <div id="gh-status" style="margin-top:8px;font-size:12px;color:var(--tx2)"></div>
+            </div>
+            <!-- 員工端 -->
+            <div>
+              <div style="font-size:12px;font-weight:600;color:var(--tx2);margin-bottom:6px">② 員工：載入最新班表</div>
+              <div class="fg">
+                <label class="fl">班表網址（預設同目錄）</label>
+                <input type="text" id="fetch-url" class="fc" value="./schedule_data.json" placeholder="https://...schedule_data.json">
+              </div>
+              <div class="fg" style="margin-bottom:8px">
+                <label class="fl">匯入模式</label>
+                <div style="display:flex;gap:12px;margin-top:3px">
+                  <label class="ckg"><input type="radio" name="fetch-mode" value="merge" checked> 合併</label>
+                  <label class="ckg"><input type="radio" name="fetch-mode" value="replace"> 完全取代</label>
+                </div>
+              </div>
+              <button class="btn bw" onclick="loadFromUrl()">⬇️ 從網址載入最新班表</button>
+              <div id="fetch-status" style="margin-top:8px;font-size:12px;color:var(--tx2)"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card" style="margin-bottom:14px">
+        <div class="ch"><div class="ct">🗑 清除舊年度資料</div></div>
+        <div class="cb">
+          <div style="display:flex;align-items:flex-start;gap:14px;flex-wrap:wrap">
+            <div>
+              <div style="font-size:13px;color:var(--tx2);margin-bottom:8px">清除指定年份之前的排班與薪資（不影響醫師、助理等設定）</div>
+              <div style="display:flex;gap:8px;align-items:center">
+                <span style="font-size:13px">清除</span>
+                <select id="cleanup-year" class="fc" style="width:100px" onchange="previewCleanup()"></select>
+                <span style="font-size:13px;color:var(--tx2)">以前的資料（不含該年）</span>
+                <button class="btn bd2" onclick="cleanupOldData()">執行清除</button>
+              </div>
+              <div id="cleanup-preview" style="margin-top:8px;font-size:12px;color:var(--tx3)"></div>
+            </div>
+            <div style="flex:1;min-width:200px"><div class="wbox" style="margin:0">清除前建議先匯出備份。</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="ch"><div class="ct">📊 資料使用量</div></div>
+        <div class="cb" id="data-size-info"></div>
+      </div>
+    </div>
+  </div><!-- /content -->
+</main>
+</div><!-- /app -->
+
+<div class="tc2" id="tc2"></div>
+
+<!-- MODALS -->
+<!-- Clinic Modal -->
+<div class="mo hidden" id="modal-clinic">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt2" id="mclin-title">新增診所</div><button class="xb" onclick="closeM('modal-clinic')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">診所名稱</label><input class="fc" id="mclin-name" placeholder="如：普全診所"></div>
+      <div class="fg"><label class="fl">說明（選填）</label><input class="fc" id="mclin-desc"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-clinic')">取消</button>
+      <button class="btn bp" onclick="saveClinic()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Doctor Modal -->
+<div class="mo hidden" id="modal-doctor">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt2" id="mdoc-title">新增醫師</div><button class="xb" onclick="closeM('modal-doctor')">✕</button></div>
+    <div class="mb">
+      <div class="fr2">
+        <div class="fg"><label class="fl">簡稱</label><input class="fc" id="mdoc-abbr" maxlength="4"></div>
+        <div class="fg"><label class="fl">全名</label><input class="fc" id="mdoc-name"></div>
+      </div>
+      <div class="fg">
+        <label class="fl">所屬診所（可多選）</label>
+        <div id="mdoc-clinics" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd);min-height:38px"></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-doctor')">取消</button>
+      <button class="btn bp" onclick="saveDoctor()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Staff Modal -->
+<div class="mo hidden" id="modal-staff">
+  <div class="md md-lg">
+    <div class="mh"><div class="mt2" id="mstaff-title">新增助理</div><button class="xb" onclick="closeM('modal-staff')">✕</button></div>
+    <div class="mb">
+      <div class="fr2">
+        <div class="fg"><label class="fl">簡稱</label><input class="fc" id="ms-abbr" maxlength="4"></div>
+        <div class="fg"><label class="fl">全名</label><input class="fc" id="ms-name"></div>
+      </div>
+      <div class="fr3">
+        <div class="fg"><label class="fl">所屬診所（可多選）</label>
+          <div id="ms-clinics" style="display:flex;flex-wrap:wrap;gap:6px;padding:8px;background:var(--sf2);border-radius:var(--r2);border:1px solid var(--bd);min-height:38px"></div>
+        </div>
+        <div class="fg"><label class="fl">診次費用/次</label><input type="number" class="fc" id="ms-base" placeholder="依費用設定"><div class="fh">空白=使用全域設定</div></div>
+        <div class="fg"><label class="fl">固定加給（月）</label><input type="number" class="fc" id="ms-bonus" value="0"></div>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">健保人數</label><input type="number" class="fc" id="ms-ins-count" value="0" min="0"></div>
+        <div class="fg" style="display:flex;align-items:flex-end;padding-bottom:4px">
+          <label class="ckg"><input type="checkbox" id="ms-has-ins"> 有健保（才扣健保費）</label>
+        </div>
+      </div>
+      <div style="border-top:1px solid var(--bd);margin:12px 0;padding-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+          <div style="font-size:13px;font-weight:600">🔗 跟診加給配對</div>
+          <button class="btn bs bsm" onclick="addStaffPairing()">＋ 新增</button>
+        </div>
+        <div class="fh" style="margin-bottom:7px">此助理跟特定醫師搭班時，每診次額外加給</div>
+        <div id="ms-pairs"></div>
+      </div>
+      <div style="border-top:1px solid var(--bd);margin:12px 0;padding-top:12px">
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+          <div style="font-size:13px;font-weight:600">💸 代扣項目</div>
+          <button class="btn bs bsm" onclick="addDed()">＋ 新增</button>
+        </div>
+        <div id="ms-deds"></div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-staff')">取消</button>
+      <button class="btn bp" onclick="saveStaff()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Holiday Modal -->
+<div class="mo hidden" id="modal-hol">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt2">新增國定假日</div><button class="xb" onclick="closeM('modal-hol')">✕</button></div>
+    <div class="mb">
+      <div class="fg"><label class="fl">日期</label><input type="date" class="fc" id="mhol-date"></div>
+      <div class="fg"><label class="fl">假日名稱</label><input class="fc" id="mhol-name"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-hol')">取消</button>
+      <button class="btn bp" onclick="saveHol()">儲存</button>
+    </div>
+  </div>
+</div>
+
+<!-- Cell Modal (with clinic tabs) -->
+<div class="mo hidden" id="modal-cell">
+  <div class="md md-lg">
+    <div class="mh">
+      <div class="mt2" id="mcell-title">編輯診次人員</div>
+      <button class="xb" onclick="closeM('modal-cell')">✕</button>
+    </div>
+    <div class="mb">
+      <div class="ibox">選擇診所分頁，設定該診所的醫師、跟診助理、櫃台、流動助理。</div>
+      <!-- Clinic tabs -->
+      <div class="clin-tab" id="mc-clin-tabs"></div>
+      <!-- Colored panel: all per-clinic selectors -->
+      <div class="clin-panel" id="mc-clin-panel">
+        <div style="margin-bottom:10px">
+          <div style="font-size:12px;font-weight:600;margin-bottom:6px" id="mc-doc-label">👨‍⚕️ 醫師（可多選）</div>
+          <div class="tag-sel" id="mc-doctors"></div>
+        </div>
+        <div id="mc-doc-groups" style="margin-bottom:10px"></div>
+        <div style="margin-bottom:10px">
+          <div style="font-size:12px;font-weight:600;margin-bottom:6px" id="mc-ctr-label">🗂 櫃台（可多選）</div>
+          <div class="tag-sel" id="mc-counters"></div>
+        </div>
+        <div>
+          <div style="font-size:12px;font-weight:600;margin-bottom:6px" id="mc-flt-label">🔄 流動助理（可多選）</div>
+          <div class="tag-sel" id="mc-floats"></div>
+        </div>
+      </div>
+    </div>
+    <div class="mf">
+      <button class="btn bd2 bsm" onclick="clearCell()">清除全部</button>
+      <div style="flex:1"></div>
+      <button class="btn bs" onclick="closeM('modal-cell')">取消</button>
+      <button class="btn bp" onclick="saveCell()">確定</button>
+    </div>
+  </div>
+</div>
+
+<!-- Admin Password Modal -->
+<div class="mo hidden" id="modal-admin-pw">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt2">🔑 管理者驗證</div><button class="xb" onclick="closeM('modal-admin-pw')">✕</button></div>
+    <div class="mb">
+      <p style="font-size:13px;color:var(--tx2);margin-bottom:12px">此操作需要管理者密碼</p>
+      <div class="fg"><label class="fl">管理者密碼</label><input type="password" class="fc" id="admin-pw-input" placeholder="輸入密碼"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-admin-pw')">取消</button>
+      <button class="btn bp" onclick="verifyAdminAndUnsettle()">確認</button>
+    </div>
+  </div>
+</div>
+
+<!-- Settle Confirm Modal -->
+<div class="mo hidden" id="modal-settle-confirm">
+  <div class="md md-sm">
+    <div class="mh"><div class="mt2">✅ 確認結算</div><button class="xb" onclick="closeM('modal-settle-confirm')">✕</button></div>
+    <div class="mb">
+      <div id="settle-confirm-text"></div>
+    </div>
+    <div class="mf">
+      <button class="btn bs" onclick="closeM('modal-settle-confirm')">取消</button>
+      <button class="btn bp" onclick="doSettle()">確定結算</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ===================================================
+// DATA
+// ===================================================
+let DB = {
+  clinics: [
+    {id:'c1',name:'普全診所',desc:''},
+    {id:'c2',name:'新勝全診所',desc:''},
+    {id:'c3',name:'愷全診所',desc:''},
+  ],
+  doctors:[
+    {id:'d1',abbr:'陳',name:'陳醫師',clinicIds:['c1']},
+    {id:'d2',abbr:'洪',name:'洪醫師',clinicIds:['c1']},
+    {id:'d3',abbr:'賴',name:'賴醫師',clinicIds:['c1']},
+    {id:'d4',abbr:'王',name:'王醫師',clinicIds:['c2']},
+    {id:'d5',abbr:'徐',name:'徐醫師',clinicIds:['c2']},
+    {id:'d6',abbr:'商',name:'商醫師',clinicIds:['c2']},
+    {id:'d7',abbr:'利',name:'利醫師',clinicIds:['c2']},
+    {id:'d8',abbr:'黃',name:'黃醫師',clinicIds:['c2']},
+    {id:'d9',abbr:'辰',name:'辰醫師',clinicIds:['c2']},
+    {id:'d10',abbr:'愷',name:'愷醫師',clinicIds:['c3']},
+    {id:'d11',abbr:'李',name:'李醫師',clinicIds:['c3']},
+  ],
+  staff:[
+    {id:'s1',abbr:'愛',name:'愉愛',clinicIds:['c1'],insCount:2,hasIns:true,bonus:10000,base:null,pairings:[],deductions:[]},
+    {id:'s2',abbr:'芸',name:'芸芸',clinicIds:['c1'],insCount:3,hasIns:true,bonus:2000,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:16728,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s3',abbr:'曼',name:'曼君',clinicIds:['c1'],insCount:4,hasIns:true,bonus:4000,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:30912,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s4',abbr:'茹',name:'韻茹',clinicIds:['c2'],insCount:1,hasIns:true,bonus:4000,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:25140,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s5',abbr:'萱',name:'育萱',clinicIds:['c2'],insCount:3,hasIns:true,bonus:3000,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:12384,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s6',abbr:'雯',name:'靖雯',clinicIds:['c2'],insCount:1,hasIns:true,bonus:3000,base:null,pairings:[],deductions:[]},
+    {id:'s7',abbr:'宜',name:'均宜',clinicIds:['c2'],insCount:2,hasIns:true,bonus:1000,base:null,pairings:[],deductions:[]},
+    {id:'s8',abbr:'茵',name:'博茵',clinicIds:['c2'],insCount:2,hasIns:true,bonus:0,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:24870,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s9',abbr:'靖',name:'子靖',clinicIds:['c2'],insCount:1,hasIns:true,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s10',abbr:'成',name:'宥成',clinicIds:['c2'],insCount:0,hasIns:false,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s11',abbr:'妗',name:'美妗',clinicIds:['c3'],insCount:1,hasIns:true,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s12',abbr:'惠',name:'智惠',clinicIds:['c3'],insCount:2,hasIns:true,bonus:0,base:null,pairings:[],deductions:[{desc:'員旅6期',amount:13626,periods:6,startMonth:'2026-01',paid:0}]},
+    {id:'s13',abbr:'芳',name:'微芳',clinicIds:['c3'],insCount:1,hasIns:true,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s14',abbr:'盈',name:'翠盈',clinicIds:['c3'],insCount:1,hasIns:true,bonus:0,base:784,pairings:[],deductions:[]},
+    {id:'s15',abbr:'汶',name:'汶琪',clinicIds:['c3'],insCount:1,hasIns:true,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s16',abbr:'洪',name:'洪助',clinicIds:['c1'],insCount:0,hasIns:false,bonus:0,base:null,pairings:[],deductions:[]},
+    {id:'s17',abbr:'燕',name:'燕如',clinicIds:['c1'],insCount:0,hasIns:false,bonus:0,base:null,pairings:[],deductions:[]},
+  ],
+  fees:{sessionFee:790,holidayMultiple:1.5,scalpelFee:200,laborInsurance:738,healthInsPerPerson:458,overtimeRate:4.5},
+  holidays:[
+    {date:'2026-01-01',name:'元旦'},{date:'2026-02-17',name:'農曆除夕'},
+    {date:'2026-02-18',name:'農曆初一'},{date:'2026-02-19',name:'農曆初二'},
+    {date:'2026-02-20',name:'農曆初三'},{date:'2026-04-04',name:'兒童節'},
+    {date:'2026-04-05',name:'清明節'},{date:'2026-05-01',name:'勞動節'},
+    {date:'2026-06-19',name:'端午節'},{date:'2026-09-25',name:'中秋節'},
+    {date:'2026-10-10',name:'國慶日'},
+  ],
+  schedule:{},
+  weeks:[],
+  payrollExtra:{},
+  payrollAdj:{},
+  // settled: { 'YYYY-MM': { settledAt, snapshot:{staff,schedule,payrollAdj,payrollExtra} } }
+  settled:{},
+  adminPwHash:'', // SHA-256 hash of admin password
+};
+
+// ===================================================
+// INIT
+// ===================================================
+window.onload=function(){
+  load();initSel();populateClinicFilters();
+  // Default to the week that contains today
+  const todayStr=fd(new Date());
+  DB.weeks.forEach((wk,i)=>{
+    const endStr=fd(new Date(new Date(wk.startDate).getTime()+6*86400000));
+    if(todayStr>=wk.startDate&&todayStr<=endStr)curWk=i;
+  });
+  renderSched();renderClinicTable();renderDocTable();renderStaffTable();renderFeeForm();renderHolPage();
+  loadGHSettings();
+  // Mobile mode
+  const savedMode=localStorage.getItem('dcViewMode');
+  const isSmall=window.innerWidth<700;
+  if(savedMode==='mobile'||(savedMode===null&&isSmall)){
+    document.body.classList.add('mobile-mode');
+    const btn=document.getElementById('viewmode-btn');
+    if(btn)btn.textContent='🖥 電腦版';
+  }
+  msWk=curWk;
+};
+
+window.addEventListener('beforeunload',function(){
+  // 1. Always save to localStorage (reliable across all browsers)
+  try{
+    const bk={...DB,_exportType:'full',_exportDate:new Date().toISOString(),_autoBackup:true};
+    localStorage.setItem('dcs4_auto',JSON.stringify(bk));
+  }catch(e){}
+  // 2. Also attempt file download (works in some browsers)
+  try{
+    const now=new Date();
+    const ts=now.getFullYear()+''+String(now.getMonth()+1).padStart(2,'0')+String(now.getDate()).padStart(2,'0')
+      +'_'+String(now.getHours()).padStart(2,'0')+String(now.getMinutes()).padStart(2,'0');
+    const exportObj={...DB,_exportType:'full',_exportDate:now.toISOString(),_autoBackup:true};
+    const blob=new Blob([JSON.stringify(exportObj,null,2)],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='診所備份_'+ts+'.json';
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+  }catch(e){}
+});
+function load(){
+  const s=localStorage.getItem('dcs4');
+  if(s)try{const d=JSON.parse(s);Object.assign(DB,d);}catch(e){}
+  if(!DB.weeks||!DB.weeks.length)DB.weeks=[{startDate:'2026-04-27'}];
+  if(!DB.settled)DB.settled={};
+  if(!DB.adminPwHash)DB.adminPwHash='';
+  if(!DB.clinics)DB.clinics=[];
+  if(DB.fees.overtimeRate===undefined)DB.fees.overtimeRate=4.5;
+  // Migrate single clinicId -> clinicIds array
+  DB.staff.forEach(s=>{
+    if(!s.pairings)s.pairings=[];
+    if(!s.clinicIds){s.clinicIds=s.clinicId?[s.clinicId]:[];delete s.clinicId;}
+    if(!Array.isArray(s.clinicIds))s.clinicIds=[s.clinicIds].filter(Boolean);
+  });
+  DB.doctors.forEach(d=>{
+    if(!d.clinicIds){d.clinicIds=d.clinicId?[d.clinicId]:[];delete d.clinicId;}
+    if(!Array.isArray(d.clinicIds))d.clinicIds=[d.clinicIds].filter(Boolean);
+  });
+}
+function save(){localStorage.setItem('dcs4',JSON.stringify(DB));}
+function initSel(){
+  const yrs=[2025,2026,2027];
+  ['pr-year','hol-yr','tw-hol-yr'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;el.innerHTML='';
+    yrs.forEach(y=>el.appendChild(new Option(y+'年',y)));el.value=2026;
+  });
+  const pm=document.getElementById('pr-month');pm.innerHTML='';
+  for(let m=1;m<=12;m++)pm.appendChild(new Option(m+'月',m));pm.value=5;
+}
+function populateClinicFilters(){
+  // Clinic multi-selectors in doctor/staff modals are rebuilt on open — nothing needed here
+}
+function populateClinicSelect(id){
+  const el=document.getElementById(id);if(!el)return;
+  const cur=el.value;
+  el.innerHTML='<option value="">未指定</option>';
+  DB.clinics.forEach(c=>el.appendChild(new Option(c.name,c.id)));
+  if(cur)el.value=cur;
+}
+
+// ===================================================
+// NAV
+// ===================================================
+function showPage(p){
+  document.querySelectorAll('.page-sec').forEach(e=>e.classList.remove('active'));
+  document.querySelectorAll('.ni').forEach(e=>e.classList.remove('active'));
+  const el=document.getElementById('page-'+p);if(el)el.classList.add('active');
+  document.querySelectorAll('.ni').forEach(item=>{
+    const oc=item.getAttribute('onclick');
+    if(oc&&oc.includes("'"+p+"'"))item.classList.add('active');
+  });
+  const T={schedule:'班表排班',payroll:'月薪結算',history:'結算紀錄',myshift:'個人班表',
+    'settings-clinic':'診所設定','settings-doctor':'醫師設定','settings-staff':'助理設定',
+    'settings-fee':'費用設定','settings-holiday':'國定假日設定','settings-admin':'管理者設定',
+    'settings-backup':'資料備份與匯出'};
+  document.getElementById('page-title').textContent=T[p]||p;
+  if(p==='payroll')calcPayroll();
+  if(p==='history')renderHistory();
+  if(p==='settings-backup')renderBackupPage();
+  if(p==='myshift')initMsPersonSel();
+  // Sync mobile nav highlight
+  const mn=document.getElementById('mnav-'+p);
+  if(mn){document.querySelectorAll('.mob-ni').forEach(b=>b.classList.remove('active'));mn.classList.add('active');mn.scrollIntoView({block:'nearest',inline:'center'});}
+  document.querySelector('.content')?.scrollTo(0,0);
+}
+
+// ===================================================
+// SCHEDULE HELPERS
+// ===================================================
+const DAYS=['一','二','三','四','五','六','日'];
+const SESS=['早','午','晚'];
+let curWk=0;
+function wkDates(start){
+  const s=new Date(start);
+  return Array.from({length:7},(_,i)=>{const d=new Date(s);d.setDate(s.getDate()+i);return d;});
+}
+function fd(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0');}
+function isHol(ds){return DB.holidays.some(h=>h.date===ds);}
+function holName(ds){const h=DB.holidays.find(h=>h.date===ds);return h?h.name:'';}
+function isWknd(d){return d.getDay()===0||d.getDay()===6;}
+function isHolOrWk(ds,d){return isHol(ds)||isWknd(d);}
+function ck(wk,d,s,r){return wk+'-'+d+'-'+s+'-'+r;}
+function getC(wk,d,s,r){return DB.schedule[ck(wk,d,s,r)]||[];}
+function setC(wk,d,s,r,v){DB.schedule[ck(wk,d,s,r)]=v;save();}
+function getDA(wk,d,s){return DB.schedule[ck(wk,d,s,'dA')]||{};}
+function setDA(wk,d,s,v){DB.schedule[ck(wk,d,s,'dA')]=v;save();}
+// docClinicMap: { docAbbr -> clinicId } — records which clinic tab each doctor was placed in
+function getDCM(wk,d,s){return DB.schedule[ck(wk,d,s,'dcm')]||{};}
+// Per-clinic counter/float helpers
+function getCC(wk,d,s,clinId){return DB.schedule[ck(wk,d,s,'ctr-'+clinId)]||[];}
+function setCC(wk,d,s,clinId,v){DB.schedule[ck(wk,d,s,'ctr-'+clinId)]=v;save();}
+function getCF(wk,d,s,clinId){return DB.schedule[ck(wk,d,s,'flt-'+clinId)]||[];}
+function setCF(wk,d,s,clinId,v){DB.schedule[ck(wk,d,s,'flt-'+clinId)]=v;save();}
+// Get ALL counters/floats across clinics (for payroll, legacy display)
+function getAllCtrs(wk,d,s){
+  // Merge per-clinic + legacy global key
+  const all=new Set(getC(wk,d,s,'counters'));
+  DB.clinics.forEach(c=>getCC(wk,d,s,c.id).forEach(a=>all.add(a)));
+  return [...all];
+}
+function getAllFlts(wk,d,s){
+  const all=new Set(getC(wk,d,s,'floats'));
+  DB.clinics.forEach(c=>getCF(wk,d,s,c.id).forEach(a=>all.add(a)));
+  return [...all];
+}
+function prevWeek(){if(curWk>0){curWk--;renderSched();}}
+function nextWeek(){if(curWk<DB.weeks.length-1){curWk++;renderSched();}}
+function addWeek(){
+  const last=DB.weeks[DB.weeks.length-1];
+  const d=new Date(last.startDate);d.setDate(d.getDate()+7);
+  DB.weeks.push({startDate:fd(d)});save();curWk=DB.weeks.length-1;renderSched();
+  toast('新增第'+DB.weeks.length+'週','s');
+}
+
+// Is this week within a settled month?
+function isWeekSettled(wkIdx){
+  const wk=DB.weeks[wkIdx];if(!wk)return false;
+  const dates=wkDates(wk.startDate);
+  return dates.some(d=>{
+    const pk=d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0');
+    return !!DB.settled[pk];
+  });
+}
+
+// Clinic colour palette for schedule display
+const CLIN_COLORS=[
+  {bg:'#eff6ff',border:'#bfdbfe',label:'#1e40af',chip:'#dbeafe',ct:'#1e40af'},
+  {bg:'#f0fdf4',border:'#bbf7d0',label:'#166534',chip:'#dcfce7',ct:'#166534'},
+  {bg:'#fdf4ff',border:'#e9d5ff',label:'#6b21a8',chip:'#f3e8ff',ct:'#6b21a8'},
+  {bg:'#fff7ed',border:'#fed7aa',label:'#9a3412',chip:'#ffedd5',ct:'#9a3412'},
+  {bg:'#fefce8',border:'#fde68a',label:'#854d0e',chip:'#fef9c3',ct:'#854d0e'},
+  {bg:'#fdf2f8',border:'#fbcfe8',label:'#9d174d',chip:'#fce7f3',ct:'#9d174d'},
+];
+function clinColor(clinId){
+  const idx=DB.clinics.findIndex(c=>c.id===clinId);
+  return CLIN_COLORS[idx%CLIN_COLORS.length]||CLIN_COLORS[0];
+}
+
+// ===================================================
+// RENDER SCHEDULE
+// ===================================================
+function renderSched(){
+  const wk=DB.weeks[curWk];if(!wk)return;
+  const dates=wkDates(wk.startDate);
+  const ed=new Date(wk.startDate);ed.setDate(ed.getDate()+6);
+  const settled=isWeekSettled(curWk);
+  document.getElementById('week-label').textContent=
+    `第 ${curWk+1} 週　${wk.startDate.replace(/-/g,'/')} ～ ${ed.getMonth()+1}/${ed.getDate()}${settled?' 🔒':''}`;
+
+  // Legend
+  const legend=document.getElementById('clin-legend');
+  if(legend){
+    legend.innerHTML='<span style="font-size:12px;color:var(--tx3);font-weight:500">診所：</span>'+
+      DB.clinics.map(c=>{
+        const col=clinColor(c.id);
+        return `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;border:1px solid ${col.border};background:${col.bg};font-size:12px;font-weight:500;color:${col.label}">●  ${c.name}</span>`;
+      }).join('')+
+      `<span style="display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:20px;border:1px solid var(--bd);background:var(--sf2);font-size:12px;font-weight:400;color:var(--tx3)">同色塊內「櫃」=櫃台、「流」=流動</span>`;
+  }
+
+  let h='<div class="sgrid">';
+  // header
+  h+='<div class="shdr"><div class="sdh" style="background:var(--sf2);"></div>';
+  dates.forEach((d,i)=>{
+    const ds=fd(d),ih=isHol(ds),isat=d.getDay()===6,isun=d.getDay()===0;
+    let cls='sdh';if(ih)cls+=' hol';else if(isat)cls+=' sat';else if(isun)cls+=' sun';
+    const hn=ih?`<span style="font-size:9px;display:block;color:var(--hl)">${holName(ds)}</span>`:'';
+    h+=`<div class="${cls}"><span class="dn">${DAYS[i]}${hn}</span><span class="dd">${d.getMonth()+1}/${d.getDate()}</span></div>`;
+  });
+  h+='</div>';
+
+  SESS.forEach(sess=>{
+    h+=`<div class="ssess"><div class="slbl">${sess}</div>`;
+    dates.forEach((d,di)=>{
+      const ds=fd(d),ih=isHol(ds),iw=isWknd(d);
+      let cls='scell';if(ih)cls+=' hc';else if(iw)cls+=' wc';
+      if(settled)cls+=' locked';
+      const docs=getC(curWk,di,sess,'doctors');
+      const da=getDA(curWk,di,sess);
+      const dcm=getDCM(curWk,di,sess); // { docAbbr -> clinicId }
+      const onClick=settled?'':`onclick="openCell(${curWk},${di},'${sess}')"`;
+      h+=`<div class="${cls}" ${onClick}>`;
+
+      // Group doctors by their ASSIGNED clinic (from dcm), fallback to first clinicId
+      DB.clinics.forEach(clin=>{
+        const clinDocs=docs.filter(abbr=>{
+          const assignedClin=dcm[abbr];
+          if(assignedClin) return assignedClin===clin.id;
+          // Fallback for old data without dcm: use first clinicId
+          const doc=DB.doctors.find(d=>d.abbr===abbr);
+          const ids=doc?.clinicIds||[];
+          return ids[0]===clin.id||(ids.includes(clin.id)&&!docs.some(a=>{
+            const d2=DB.doctors.find(d=>d.abbr===a);
+            return a!==abbr&&d2&&d2.clinicIds&&d2.clinicIds[0]===clin.id;
+          }));
+        });
+        const clinCtrs=getCC(curWk,di,sess,clin.id);
+        const clinFlts=getCF(curWk,di,sess,clin.id);
+        if(!clinDocs.length&&!clinCtrs.length&&!clinFlts.length)return;
+        const col=clinColor(clin.id);
+        h+=`<div style="border:1px solid ${col.border};border-radius:4px;padding:2px 4px;margin-bottom:2px;background:${col.bg}">`;
+        h+=`<div style="font-size:9px;color:${col.label};font-weight:600;letter-spacing:.03em;margin-bottom:1px">${clin.name}</div>`;
+        clinDocs.forEach(docAbbr=>{
+          const ass=da[docAbbr]||[];
+          h+=`<div style="margin-bottom:1px"><span style="background:${col.chip};color:#1a1814;border-radius:3px;padding:0 4px;font-size:11px;font-weight:700">${docAbbr}</span>`;
+          if(ass.length)h+=` <span style="font-size:10px;color:#1a1814;font-weight:700">${ass.join(' ')}</span>`;
+          h+='</div>';
+        });
+        if(clinCtrs.length)h+=`<div style="margin-top:1px"><span style="font-size:9px;color:${col.label};font-weight:600;opacity:.7">櫃 </span>${clinCtrs.map(a=>`<span style="background:var(--sf2);border:1px solid ${col.border};border-radius:3px;padding:0 3px;font-size:10px;color:#1a1814;font-weight:700">${a}</span>`).join(' ')}</div>`;
+        if(clinFlts.length)h+=`<div style="margin-top:1px"><span style="font-size:9px;color:${col.label};font-weight:600;opacity:.7">流 </span>${clinFlts.map(a=>`<span style="background:${col.chip};border-radius:3px;padding:0 3px;font-size:10px;color:#1a1814;font-weight:700">${a}</span>`).join(' ')}</div>`;
+        h+='</div>';
+      });
+      if(!settled){
+        const hasAnything=docs.length||DB.clinics.some(c=>getCC(curWk,di,sess,c.id).length||getCF(curWk,di,sess,c.id).length);
+        if(!hasAnything)h+=`<div style="color:var(--bd2);font-size:10px;margin-top:4px">點擊排班</div>`;
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById('schedule-container').innerHTML=h;
+  renderWeeklyStaffCounts();
+}
+
+// ===================================================
+// WEEKLY STAFF SESSION COUNTS (即時顯示)
+// ===================================================
+function renderWeeklyStaffCounts(){
+  const el=document.getElementById('weekly-staff-counts');
+  if(!el)return;
+  const wk=DB.weeks[curWk];if(!wk){el.innerHTML='';return;}
+
+  // Count sessions per doctor
+  const docCnt={};
+  DB.doctors.forEach(d=>{docCnt[d.abbr]={wd:0,wk:0,total:0};});
+
+  // Count sessions per staff (counters/floats/跟診)
+  const staffCnt={};
+  DB.staff.forEach(s=>{staffCnt[s.abbr]={wd:0,wk:0,total:0};});
+
+  wkDates(wk.startDate).forEach((d,di)=>{
+    const ds=fd(d);const isHW=isHolOrWk(ds,d);
+    SESS.forEach(sess=>{
+      // Doctors
+      const docs=getC(curWk,di,sess,'doctors');
+      docs.forEach(abbr=>{
+        if(!docCnt[abbr])docCnt[abbr]={wd:0,wk:0,total:0};
+        if(isHW)docCnt[abbr].wk++;else docCnt[abbr].wd++;
+        docCnt[abbr].total++;
+      });
+      // Staff (跟診 + 櫃台 + 流動)
+      const allStaff=new Set();
+      const da=getDA(curWk,di,sess);
+      docs.forEach(doc=>(da[doc]||[]).forEach(a=>allStaff.add(a)));
+      DB.clinics.forEach(c=>{
+        getCC(curWk,di,sess,c.id).forEach(a=>allStaff.add(a));
+        getCF(curWk,di,sess,c.id).forEach(a=>allStaff.add(a));
+      });
+      allStaff.forEach(abbr=>{
+        if(!staffCnt[abbr])staffCnt[abbr]={wd:0,wk:0,total:0};
+        if(isHW)staffCnt[abbr].wk++;else staffCnt[abbr].wd++;
+        staffCnt[abbr].total++;
+      });
+    });
+  });
+
+  const docWithCnt=DB.doctors.filter(d=>docCnt[d.abbr]&&docCnt[d.abbr].total>0);
+  const staffWithCnt=DB.staff.filter(s=>staffCnt[s.abbr]&&staffCnt[s.abbr].total>0);
+  if(!docWithCnt.length&&!staffWithCnt.length){el.innerHTML='';return;}
+
+  const makeChip=(abbr,c,accentColor)=>`<span style="display:inline-flex;align-items:center;gap:4px;padding:3px 8px;background:var(--sf);border:1px solid var(--bd);border-radius:20px;font-size:12px">
+    <span style="font-weight:600;color:var(--tx)">${abbr}</span>
+    <span style="color:${accentColor};font-weight:700">${c.total}</span>
+    ${c.wk>0?`<span style="font-size:10px;color:var(--wn)">(假${c.wk})</span>`:''}
+  </span>`;
+
+  const docChips=docWithCnt.map(d=>makeChip(d.abbr,docCnt[d.abbr],'#185fa5')).join('');
+  const staffChips=staffWithCnt.map(s=>makeChip(s.abbr,staffCnt[s.abbr],'var(--ac)')).join('');
+
+  el.innerHTML=`<div style="background:var(--sf);border:1px solid var(--bd);border-radius:var(--r);padding:8px 14px;box-shadow:var(--sh);display:flex;flex-direction:column;gap:6px">
+    ${docWithCnt.length?`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:5px">
+      <span style="font-size:11px;font-weight:600;color:var(--tx2);white-space:nowrap;min-width:64px">醫師診次</span>
+      ${docChips}
+    </div>`:''}
+    ${staffWithCnt.length?`<div style="display:flex;align-items:center;flex-wrap:wrap;gap:5px">
+      <span style="font-size:11px;font-weight:600;color:var(--tx2);white-space:nowrap;min-width:64px">助理診次</span>
+      ${staffChips}
+    </div>`:''}
+  </div>`;
+}
+
+// ===================================================
+// COPY PREVIOUS WEEK SCHEDULE
+// ===================================================
+function copyPrevWeek(){
+  if(curWk===0){toast('已是第一週，沒有上週可帶入','w');return;}
+  if(isWeekSettled(curWk)){toast('此週已結算，不可修改','w');return;}
+
+  // Check if current week already has data
+  const wk=DB.weeks[curWk];
+  const dates=wkDates(wk.startDate);
+  let hasData=false;
+  dates.forEach((_,di)=>{
+    SESS.forEach(sess=>{
+      if(getC(curWk,di,sess,'doctors').length)hasData=true;
+      DB.clinics.forEach(c=>{
+        if(getCC(curWk,di,sess,c.id).length||getCF(curWk,di,sess,c.id).length)hasData=true;
+      });
+    });
+  });
+  if(hasData&&!confirm('本週已有排班資料，確定要用上週班表覆蓋嗎？'))return;
+
+  const prevWk=curWk-1;
+  // Copy all schedule keys from prev week to cur week
+  let copied=0;
+  const prevKeys=Object.keys(DB.schedule).filter(k=>k.startsWith(prevWk+'-'));
+  prevKeys.forEach(k=>{
+    const parts=k.split('-');
+    parts[0]=String(curWk);
+    const newKey=parts.join('-');
+    DB.schedule[newKey]=JSON.parse(JSON.stringify(DB.schedule[k]));
+    copied++;
+  });
+  save();
+  renderSched();
+  toast(`已帶入上週班表（${copied} 筆資料）`,'s');
+}
+let cellState={wk:0,di:0,sess:''};
+let activeClinTab='';
+// Per-tab: { clinId: { doctors, docAssistants, counters, floats } }
+let tabSelections={};
+
+function openCell(wk,di,sess){
+  if(isWeekSettled(wk)){toast('此週已結算，不可修改','w');return;}
+  cellState={wk,di,sess};
+  tabSelections={};
+
+  const dates=wkDates(DB.weeks[wk].startDate);
+  const d=dates[di];
+  document.getElementById('mcell-title').textContent=`${d.getMonth()+1}/${d.getDate()}（${DAYS[di]}）${sess}診`;
+
+  const savedDocs=getC(wk,di,sess,'doctors');
+  const savedDA=getDA(wk,di,sess);
+  const savedDCM=getDCM(wk,di,sess); // { docAbbr -> clinicId }
+
+  // Assign each saved doctor to exactly ONE clinic tab using DCM
+  // If no DCM (old data), fall back to first clinicId
+  const assignedDocs=new Set();
+
+  DB.clinics.forEach(c=>{
+    const clinDocs=savedDocs.filter(abbr=>{
+      if(assignedDocs.has(abbr))return false;
+      const assigned=savedDCM[abbr];
+      if(assigned) return assigned===c.id;
+      // Fallback: first clinic in clinicIds
+      const doc=DB.doctors.find(d=>d.abbr===abbr);
+      return (doc?.clinicIds||[])[0]===c.id;
+    });
+    clinDocs.forEach(abbr=>assignedDocs.add(abbr));
+    const clinDA={};
+    clinDocs.forEach(doc=>{clinDA[doc]=savedDA[doc]||[];});
+    tabSelections[c.id]={
+      doctors:clinDocs,
+      docAssistants:clinDA,
+      counters:getCC(wk,di,sess,c.id),
+      floats:getCF(wk,di,sess,c.id),
+    };
+  });
+
+  buildClinicTabs();
+  activeClinTab=DB.clinics[0]?.id||'';
+  highlightActiveTab(activeClinTab);
+  renderClinTab(activeClinTab);
+  openM('modal-cell');
+}
+
+function tabBadgeCount(clinId){
+  const t=tabSelections[clinId];if(!t)return 0;
+  return (t.doctors?.length||0)+(t.counters?.length||0)+(t.floats?.length||0);
+}
+
+function buildClinicTabs(){
+  const tabs=document.getElementById('mc-clin-tabs');
+  tabs.innerHTML=DB.clinics.map((c,i)=>{
+    const col=CLIN_COLORS[i%CLIN_COLORS.length];
+    const cnt=tabBadgeCount(c.id);
+    return `<div class="clin-tab-item" id="ctab-${c.id}"
+      style="background:${col.bg};border-color:${col.border};color:${col.label};opacity:${cnt>0?1:0.6}"
+      onclick="switchClinTab('${c.id}')"
+    >${c.name}${cnt>0?` <span style="font-size:10px;background:${col.chip};border-radius:10px;padding:1px 6px;margin-left:3px">${cnt}</span>`:''}</div>`;
+  }).join('');
+}
+
+function highlightActiveTab(clinId){
+  const idx=DB.clinics.findIndex(c=>c.id===clinId);
+  const col=idx>=0?CLIN_COLORS[idx%CLIN_COLORS.length]:CLIN_COLORS[0];
+
+  DB.clinics.forEach((c,i)=>{
+    const el=document.getElementById('ctab-'+c.id);if(!el)return;
+    const cc=CLIN_COLORS[i%CLIN_COLORS.length];
+    const isActive=c.id===clinId;
+    const cnt=tabBadgeCount(c.id);
+    el.style.borderColor=isActive?cc.label:cc.border;
+    el.style.borderBottomColor=isActive?cc.bg:cc.border;
+    el.style.fontWeight=isActive?'700':'500';
+    el.style.opacity=isActive?'1':cnt>0?'1':'0.6';
+    el.style.background=cc.bg;
+    el.style.paddingBottom=isActive?'9px':'7px';
+    el.style.zIndex=isActive?'2':'1';
+    el.style.position='relative';
+  });
+
+  // Panel background + border color
+  const panel=document.getElementById('mc-clin-panel');
+  if(panel){panel.style.background=col.bg;panel.style.borderColor=col.label;}
+  // Label colors
+  ['mc-doc-label','mc-ctr-label','mc-flt-label'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.color=col.label;
+  });
+  // tag-sel borders
+  ['mc-doctors','mc-counters','mc-floats'].forEach(id=>{
+    const el=document.getElementById(id);if(el)el.style.borderColor=col.border;
+  });
+}
+
+function refreshTabBadge(clinId){
+  const el=document.getElementById('ctab-'+clinId);if(!el)return;
+  const idx=DB.clinics.findIndex(c=>c.id===clinId);
+  const col=CLIN_COLORS[idx%CLIN_COLORS.length];
+  const cnt=tabBadgeCount(clinId);
+  el.innerHTML=DB.clinics[idx].name+(cnt>0?` <span style="font-size:10px;background:${col.chip};border-radius:10px;padding:1px 6px;margin-left:3px">${cnt}</span>`:'');
+  el.style.opacity=clinId===activeClinTab?'1':cnt>0?'1':'0.6';
+}
+
+function switchClinTab(clinId){
+  // Flush current tab state before switching
+  if(activeClinTab){
+    const selDocs=Array.from(document.querySelectorAll('#mc-doctors .tdr')).map(e=>e.textContent);
+    const da={};
+    selDocs.forEach(doc=>{
+      const groupEl=document.getElementById('dg-'+doc);
+      da[doc]=groupEl?Array.from(groupEl.querySelectorAll('.tas')).map(e=>e.textContent):[];
+    });
+    const ctrs=Array.from(document.querySelectorAll('#mc-counters .tct')).map(e=>e.textContent);
+    const flts=Array.from(document.querySelectorAll('#mc-floats .tfl')).map(e=>e.textContent);
+    tabSelections[activeClinTab]={doctors:selDocs,docAssistants:da,counters:ctrs,floats:flts};
+    refreshTabBadge(activeClinTab);
+  }
+  activeClinTab=clinId;
+  highlightActiveTab(clinId);
+  renderClinTab(clinId); // re-renders with updated "taken by other tab" info
+}
+
+function renderClinTab(clinId){
+  const col=CLIN_COLORS[DB.clinics.findIndex(c=>c.id===clinId)%CLIN_COLORS.length];
+  const tabData=tabSelections[clinId]||{doctors:[],docAssistants:{},counters:[],floats:[]};
+  const clinDocs=DB.doctors.filter(d=>(d.clinicIds||[]).includes(clinId));
+  const clinStaffAll=DB.staff.filter(s=>(s.clinicIds||[]).includes(clinId));
+
+  highlightActiveTab(clinId);
+
+  // Collect doctors already selected in OTHER tabs
+  const selectedInOtherTabs=new Set();
+  DB.clinics.forEach(c=>{
+    if(c.id===clinId)return;
+    (tabSelections[c.id]?.doctors||[]).forEach(a=>selectedInOtherTabs.add(a));
+  });
+
+  // Doctors
+  const docEl=document.getElementById('mc-doctors');
+  if(!clinDocs.length){
+    docEl.innerHTML='<span style="font-size:12px;color:var(--tx3)">此診所尚無醫師</span>';
+    document.getElementById('mc-doc-groups').innerHTML='';
+  } else {
+    docEl.innerHTML=clinDocs.map(doc=>{
+      const sel=tabData.doctors.includes(doc.abbr);
+      const takenByOther=selectedInOtherTabs.has(doc.abbr);
+      if(takenByOther){
+        const otherClinName=DB.clinics.find(c=>c.id!==clinId&&(tabSelections[c.id]?.doctors||[]).includes(doc.abbr))?.name||'';
+        return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在「${otherClinName}」診所分頁選取">${doc.abbr}*</span>`;
+      }
+      return `<span class="tag ${sel?'tdr':''}" style="${sel?`background:${col.chip};border-color:${col.border};color:${col.label}`:''}"
+        onclick="toggleDocColored(this,'${doc.abbr}','${clinId}')">${doc.abbr}</span>`;
+    }).join('');
+    renderDocGroupsColored(tabData.doctors,tabData.docAssistants,clinId,col);
+  }
+
+  // Build set of ALL staff already used in this tab (across ALL roles: docAssistants, counters, floats)
+  // so the same person can't appear in multiple roles
+  const usedInTab=new Set();
+  Object.values(tabData.docAssistants||{}).forEach(arr=>arr.forEach(a=>usedInTab.add(a)));
+  (tabData.counters||[]).forEach(a=>usedInTab.add(a));
+  (tabData.floats||[]).forEach(a=>usedInTab.add(a));
+
+  // Also collect staff used in OTHER clinic tabs (cross-clinic duplicate prevention)
+  const usedInOtherTabs=new Set();
+  DB.clinics.forEach(c=>{
+    if(c.id===clinId)return;
+    const ot=tabSelections[c.id]||{};
+    Object.values(ot.docAssistants||{}).forEach(arr=>arr.forEach(a=>usedInOtherTabs.add(a)));
+    (ot.counters||[]).forEach(a=>usedInOtherTabs.add(a));
+    (ot.floats||[]).forEach(a=>usedInOtherTabs.add(a));
+  });
+
+  const makeStaffChip=(s,selClass,clinId2,field,cls)=>{
+    const sel=(tabData[field]||[]).includes(s.abbr);
+    const blocked=!sel&&usedInTab.has(s.abbr); // used in another role in same tab
+    const blockedOther=!sel&&!blocked&&usedInOtherTabs.has(s.abbr); // used in another clinic tab
+    if(blocked){
+      return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在此診次其他角色選取">${s.abbr}</span>`;
+    }
+    if(blockedOther){
+      const otherClin=DB.clinics.find(c=>c.id!==clinId&&(
+        Object.values(tabSelections[c.id]?.docAssistants||{}).some(arr=>arr.includes(s.abbr))||
+        (tabSelections[c.id]?.counters||[]).includes(s.abbr)||
+        (tabSelections[c.id]?.floats||[]).includes(s.abbr)
+      ))?.name||'其他診所';
+      return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在「${otherClin}」排班">${s.abbr}*</span>`;
+    }
+    return `<span class="tag ${sel?cls:''}" style="${sel?`background:${col.chip};border-color:${col.border};color:${col.label}`:''}"
+      onclick="toggleCtrFltColored(this,'${clinId2}','${field}','${cls}')">${s.abbr}</span>`;
+  };
+
+  // Counters
+  document.getElementById('mc-counters').innerHTML=
+    clinStaffAll.map(s=>makeStaffChip(s,'tct',clinId,'counters','tct')).join('')
+    ||'<span style="font-size:12px;color:var(--tx3)">此診所尚無助理</span>';
+
+  // Floats
+  document.getElementById('mc-floats').innerHTML=
+    clinStaffAll.map(s=>makeStaffChip(s,'tfl',clinId,'floats','tfl')).join('')
+    ||'<span style="font-size:12px;color:var(--tx3)">此診所尚無助理</span>';
+}
+
+function toggleDocColored(el,docAbbr,clinId){
+  const col=CLIN_COLORS[DB.clinics.findIndex(c=>c.id===clinId)%CLIN_COLORS.length];
+  if(el.classList.contains('tdr')){
+    // Deselecting
+    el.className='tag';el.removeAttribute('style');
+  } else {
+    // Selecting — first remove from any other tab that has this doctor
+    DB.clinics.forEach(c=>{
+      if(c.id===clinId)return;
+      if(tabSelections[c.id]?.doctors?.includes(docAbbr)){
+        tabSelections[c.id].doctors=tabSelections[c.id].doctors.filter(d=>d!==docAbbr);
+        delete tabSelections[c.id].docAssistants?.[docAbbr];
+        refreshTabBadge(c.id);
+      }
+    });
+    el.className='tag tdr';
+    el.style=`background:${col.chip};border-color:${col.border};color:${col.label}`;
+  }
+  const selDocs=Array.from(document.querySelectorAll('#mc-doctors .tdr')).map(e=>e.textContent);
+  if(!tabSelections[clinId])tabSelections[clinId]={doctors:[],docAssistants:{},counters:[],floats:[]};
+  const prev=tabSelections[clinId].doctors;
+  prev.filter(d=>!selDocs.includes(d)).forEach(d=>delete tabSelections[clinId].docAssistants[d]);
+  tabSelections[clinId].doctors=selDocs;
+  renderDocGroupsColored(selDocs,tabSelections[clinId].docAssistants,clinId,col);
+  refreshTabBadge(clinId);
+  highlightActiveTab(clinId);
+}
+
+function toggleCtrFltColored(el,clinId,field,cls){
+  const col=CLIN_COLORS[DB.clinics.findIndex(c=>c.id===clinId)%CLIN_COLORS.length];
+  if(el.classList.contains(cls)){el.className='tag';el.removeAttribute('style');}
+  else{el.className='tag '+cls;el.style=`background:${col.chip};border-color:${col.border};color:${col.label}`;}
+  if(!tabSelections[clinId])tabSelections[clinId]={doctors:[],docAssistants:{},counters:[],floats:[]};
+  const containerId=field==='counters'?'mc-counters':'mc-floats';
+  tabSelections[clinId][field]=Array.from(document.querySelectorAll(`#${containerId} .${cls}`)).map(e=>e.textContent);
+  refreshTabBadge(clinId);
+  // Re-render doc groups and counter/float chips to update blocked states
+  const tabData=tabSelections[clinId];
+  renderDocGroupsColored(tabData.doctors,tabData.docAssistants,clinId,col);
+  _refreshCtrFltChips(clinId,col,tabData);
+}
+
+// Helper: refresh only counter/float chip disabled states without full re-render
+function _refreshCtrFltChips(clinId,col,tabData){
+  const clinStaffAll=DB.staff.filter(s=>(s.clinicIds||[]).includes(clinId));
+  const usedInTab=new Set();
+  Object.values(tabData.docAssistants||{}).forEach(arr=>arr.forEach(a=>usedInTab.add(a)));
+  (tabData.counters||[]).forEach(a=>usedInTab.add(a));
+  (tabData.floats||[]).forEach(a=>usedInTab.add(a));
+
+  const usedInOtherTabs=new Set();
+  DB.clinics.forEach(c=>{
+    if(c.id===clinId)return;
+    const ot=tabSelections[c.id]||{};
+    Object.values(ot.docAssistants||{}).forEach(arr=>arr.forEach(a=>usedInOtherTabs.add(a)));
+    (ot.counters||[]).forEach(a=>usedInOtherTabs.add(a));
+    (ot.floats||[]).forEach(a=>usedInOtherTabs.add(a));
+  });
+
+  const makeChip=(s,field,cls2)=>{
+    const sel=(tabData[field]||[]).includes(s.abbr);
+    const blocked=!sel&&usedInTab.has(s.abbr);
+    const blockedOther=!sel&&!blocked&&usedInOtherTabs.has(s.abbr);
+    if(blocked) return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在此診次其他角色選取">${s.abbr}</span>`;
+    if(blockedOther){
+      const otherClin=DB.clinics.find(c=>c.id!==clinId&&(
+        Object.values(tabSelections[c.id]?.docAssistants||{}).some(arr=>arr.includes(s.abbr))||
+        (tabSelections[c.id]?.counters||[]).includes(s.abbr)||
+        (tabSelections[c.id]?.floats||[]).includes(s.abbr)
+      ))?.name||'其他診所';
+      return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在「${otherClin}」排班">${s.abbr}*</span>`;
+    }
+    return `<span class="tag ${sel?cls2:''}" style="${sel?`background:${col.chip};border-color:${col.border};color:${col.label}`:''}"
+      onclick="toggleCtrFltColored(this,'${clinId}','${field}','${cls2}')">${s.abbr}</span>`;
+  };
+  const ctrEl=document.getElementById('mc-counters');
+  const fltEl=document.getElementById('mc-floats');
+  if(ctrEl)ctrEl.innerHTML=clinStaffAll.map(s=>makeChip(s,'counters','tct')).join('')||'<span style="font-size:12px;color:var(--tx3)">此診所尚無助理</span>';
+  if(fltEl)fltEl.innerHTML=clinStaffAll.map(s=>makeChip(s,'floats','tfl')).join('')||'<span style="font-size:12px;color:var(--tx3)">此診所尚無助理</span>';
+}
+
+function renderDocGroupsColored(selDocs,curDA,clinId,col){
+  const el=document.getElementById('mc-doc-groups');
+  if(!selDocs.length){
+    el.innerHTML='<div style="color:var(--tx3);font-size:12px;padding:4px 0">← 請先選擇醫師，再設定各醫師的跟診助理</div>';
+    return;
+  }
+  const tabData=tabSelections[clinId]||{};
+  const clinStaff=DB.staff.filter(s=>(s.clinicIds||[]).includes(clinId));
+
+  el.innerHTML=selDocs.map(doc=>{
+    const cur=curDA[doc]||[];
+    // Staff used in OTHER roles in this tab (counters/floats and OTHER doctors' assistants)
+    const usedElsewhere=new Set();
+    (tabData.counters||[]).forEach(a=>usedElsewhere.add(a));
+    (tabData.floats||[]).forEach(a=>usedElsewhere.add(a));
+    Object.entries(tabData.docAssistants||{}).forEach(([d2,arr])=>{
+      if(d2===doc)return; // skip self
+      arr.forEach(a=>usedElsewhere.add(a));
+    });
+
+    // Also collect staff used in OTHER clinic tabs
+    const usedInOtherTabs=new Set();
+    DB.clinics.forEach(c=>{
+      if(c.id===clinId)return;
+      const ot=tabSelections[c.id]||{};
+      Object.values(ot.docAssistants||{}).forEach(arr=>arr.forEach(a=>usedInOtherTabs.add(a)));
+      (ot.counters||[]).forEach(a=>usedInOtherTabs.add(a));
+      (ot.floats||[]).forEach(a=>usedInOtherTabs.add(a));
+    });
+
+    const chips=clinStaff.map(s=>{
+      const sel=cur.includes(s.abbr);
+      const blocked=!sel&&usedElsewhere.has(s.abbr);
+      const blockedOther=!sel&&!blocked&&usedInOtherTabs.has(s.abbr);
+      if(blocked){
+        return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在此診次其他角色選取">${s.abbr}</span>`;
+      }
+      if(blockedOther){
+        const otherClin=DB.clinics.find(c=>c.id!==clinId&&(
+          Object.values(tabSelections[c.id]?.docAssistants||{}).some(arr=>arr.includes(s.abbr))||
+          (tabSelections[c.id]?.counters||[]).includes(s.abbr)||
+          (tabSelections[c.id]?.floats||[]).includes(s.abbr)
+        ))?.name||'其他診所';
+        return `<span class="tag" style="opacity:0.4;cursor:not-allowed;border-style:dashed" title="已在「${otherClin}」排班">${s.abbr}*</span>`;
+      }
+      return `<span class="tag ${sel?'tas':''}" style="${sel?`background:${col.chip};border-color:${col.border};color:${col.label}`:''}"
+        onclick="toggleAssColored(this,'${doc}','${clinId}')">${s.abbr}</span>`;
+    }).join('');
+    return `<div class="doc-grp-sec" style="border-color:${col.border}">
+      <div class="doc-grp-hd2" style="background:${col.bg};border-color:${col.border}">
+        <span class="chip" style="background:${col.chip};color:${col.label};border-radius:3px;padding:1px 6px">${doc}</span>
+        <span style="font-size:12px;color:${col.label};font-weight:600;margin-left:4px">的跟診助理：</span>
+      </div>
+      <div class="doc-grp-bd" id="dg-${doc}">${chips||`<span style="font-size:11px;color:var(--tx3)">此診所無助理</span>`}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleAssColored(el,docAbbr,clinId){
+  const col=CLIN_COLORS[DB.clinics.findIndex(c=>c.id===clinId)%CLIN_COLORS.length];
+  if(el.classList.contains('tas')){el.className='tag';el.removeAttribute('style');}
+  else{el.className='tag tas';el.style=`background:${col.chip};border-color:${col.border};color:${col.label}`;}
+  const groupEl=document.getElementById('dg-'+docAbbr);
+  if(groupEl){
+    if(!tabSelections[clinId])tabSelections[clinId]={doctors:[],docAssistants:{},counters:[],floats:[]};
+    tabSelections[clinId].docAssistants[docAbbr]=Array.from(groupEl.querySelectorAll('.tas')).map(e=>e.textContent);
+  }
+  // Re-render doc groups and counter/float chips to update blocked states
+  const tabData=tabSelections[clinId];
+  renderDocGroupsColored(tabData.doctors,tabData.docAssistants,clinId,col);
+  _refreshCtrFltChips(clinId,col,tabData);
+}
+
+function renderDocGroups(selDocs,curDA,clinId){
+  const col=CLIN_COLORS[DB.clinics.findIndex(c=>c.id===clinId)%CLIN_COLORS.length]||CLIN_COLORS[0];
+  renderDocGroupsColored(selDocs,curDA,clinId,col);
+}
+
+function toggleT(el,cls){
+  if(el.classList.contains(cls))el.className='tag';else el.className='tag '+cls;
+}
+
+function clearCell(){
+  DB.clinics.forEach(c=>{tabSelections[c.id]={doctors:[],docAssistants:{},counters:[],floats:[]};});
+  buildClinicTabs();
+  renderClinTab(activeClinTab);
+  toast('已清除本診次排班','s');
+}
+
+function saveCell(){
+  const {wk,di,sess}=cellState;
+  // Flush current tab
+  if(activeClinTab){
+    const selDocs=Array.from(document.querySelectorAll('#mc-doctors .tdr')).map(e=>e.textContent);
+    const da={};
+    selDocs.forEach(doc=>{
+      const groupEl=document.getElementById('dg-'+doc);
+      da[doc]=groupEl?Array.from(groupEl.querySelectorAll('.tas')).map(e=>e.textContent):[];
+    });
+    const ctrs=Array.from(document.querySelectorAll('#mc-counters .tct')).map(e=>e.textContent);
+    const flts=Array.from(document.querySelectorAll('#mc-floats .tfl')).map(e=>e.textContent);
+    tabSelections[activeClinTab]={doctors:selDocs,docAssistants:da,counters:ctrs,floats:flts};
+  }
+
+  // Merge doctors + DA across all clinics, deduplicate doctors
+  const seenDocs=new Set();
+  const allDocs=[];const newDA={};
+  DB.clinics.forEach(c=>{
+    const td=tabSelections[c.id];if(!td)return;
+    td.doctors.forEach(doc=>{
+      if(seenDocs.has(doc))return; // skip duplicate
+      seenDocs.add(doc);
+      allDocs.push(doc);
+      newDA[doc]=td.docAssistants[doc]||[];
+    });
+  });
+
+  setC(wk,di,sess,'doctors',allDocs);
+  setDA(wk,di,sess,newDA);
+  // Save which clinic each doctor was assigned to (for display grouping)
+  const docClinicMap={};
+  DB.clinics.forEach(c=>{
+    const td=tabSelections[c.id];if(!td)return;
+    td.doctors.forEach(doc=>{ if(!docClinicMap[doc]) docClinicMap[doc]=c.id; });
+  });
+  DB.schedule[ck(wk,di,sess,'dcm')]=docClinicMap; save();
+  // Clear legacy global counters/floats
+  setC(wk,di,sess,'counters',[]);
+  setC(wk,di,sess,'floats',[]);
+  // Save per-clinic
+  DB.clinics.forEach(c=>{
+    const td=tabSelections[c.id]||{counters:[],floats:[]};
+    setCC(wk,di,sess,c.id,td.counters||[]);
+    setCF(wk,di,sess,c.id,td.floats||[]);
+  });
+
+  closeM('modal-cell');renderSched();toast('班表已更新','s');
+}
+
+// ===================================================
+// PRINT SCHEDULE
+// ===================================================
+function printSched(){
+  const wk=DB.weeks[curWk];const dates=wkDates(wk.startDate);
+  const s0=`${dates[0].getMonth()+1}/${dates[0].getDate()}`;
+  const s6=`${dates[6].getMonth()+1}/${dates[6].getDate()}`;
+  const printColors=['#e8f0fe','#e6f4ea','#f3e8fd','#fce8d5','#fef9c3','#fde2f3'];
+  const printBorders=['#93c5fd','#86efac','#d8b4fe','#fdba74','#fde68a','#f9a8d4'];
+
+  // Pre-compute: for each day (di) and clinic, does it have ANY data across ALL sessions?
+  // If yes → always show that clinic's column for that day (even if a specific session is empty)
+  // If no data across entire day → omit that clinic column entirely for that day
+  const clinicActiveOnDay = {}; // key: `${di}-${clinId}` → true/false
+  dates.forEach((_,di)=>{
+    DB.clinics.forEach(clin=>{
+      const hasAny = SESS.some(s=>{
+        const allDocs=getC(curWk,di,s,'doctors');
+        const dcm=getDCM(curWk,di,s);
+        const docs=allDocs.filter(abbr=>{
+          const assigned=dcm[abbr];
+          if(assigned) return assigned===clin.id;
+          const doc=DB.doctors.find(d=>d.abbr===abbr);
+          return (doc?.clinicIds||[])[0]===clin.id;
+        });
+        return docs.length||getCC(curWk,di,s,clin.id).length||getCF(curWk,di,s,clin.id).length;
+      });
+      clinicActiveOnDay[`${di}-${clin.id}`]=hasAny;
+    });
+  });
+
+  // Build rows: one row per session, 7 day columns
+  let rows='';
+  SESS.forEach(sess=>{
+    const cellHtml=dates.map((_,di)=>{
+      const clinicBlocks=DB.clinics.map((clin,ci)=>{
+        const dayActive=clinicActiveOnDay[`${di}-${clin.id}`];
+        // If this clinic has no data at all this day, skip it entirely
+        if(!dayActive) return '';
+
+        const allDocs=getC(curWk,di,sess,'doctors');
+        const dcm=getDCM(curWk,di,sess);
+        const da=getDA(curWk,di,sess);
+        const docs=allDocs.filter(abbr=>{
+          const assigned=dcm[abbr];
+          if(assigned) return assigned===clin.id;
+          const doc=DB.doctors.find(d=>d.abbr===abbr);
+          return (doc?.clinicIds||[])[0]===clin.id;
+        });
+        const clinCtrs=getCC(curWk,di,sess,clin.id);
+        const clinFlts=getCF(curWk,di,sess,clin.id);
+        const sessEmpty=!docs.length&&!clinCtrs.length&&!clinFlts.length;
+        const bg=printColors[ci%printColors.length];
+        const bd=printBorders[ci%printBorders.length];
+
+        if(sessEmpty){
+          // Clinic is active today but no data for THIS session → pale placeholder to hold position
+          return `<div style="flex:1;min-width:0;border:1px dashed ${bd};border-radius:3px;padding:2px 3px;opacity:0.3;min-height:16px">
+            <div style="font-size:9px;color:#aaa;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${clin.name}</div>
+          </div>`;
+        }
+        let block=`<div style="flex:1;min-width:0;background:${bg};border:1px solid ${bd};border-radius:3px;padding:2px 3px">`;
+        block+=`<div style="font-size:9px;color:#333;font-weight:700;border-bottom:1px solid ${bd};margin-bottom:2px;padding-bottom:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">${clin.name}</div>`;
+        docs.forEach(d=>{
+          const ass=(da[d]||[]).join(' ');
+          block+=`<div style="margin:1px 0;white-space:nowrap;font-size:12px"><b style="color:#000">${d}</b>${ass?` <b style="color:#000;font-size:10px">${ass}</b>`:''}</div>`;
+        });
+        if(clinCtrs.length)block+=`<div style="font-size:10px;white-space:nowrap"><span style="color:#444;font-weight:700">櫃</span> <b>${clinCtrs.join('</b> <b>')}</b></div>`;
+        if(clinFlts.length)block+=`<div style="font-size:10px;white-space:nowrap"><span style="color:#444;font-weight:700">流</span> <b>${clinFlts.join('</b> <b>')}</b></div>`;
+        block+='</div>';
+        return block;
+      }).join('');
+      return `<td style="padding:2px;vertical-align:top"><div style="display:flex;gap:2px;align-items:flex-start">${clinicBlocks}</div></td>`;
+    }).join('');
+    rows+=`<tr><td style="text-align:center;font-weight:700;font-size:16px;background:#f0f0f0;border-right:2px solid #999;white-space:nowrap;vertical-align:middle;width:24px">${sess}</td>${cellHtml}</tr>`;
+  });
+
+  const hd=dates.map((d,i)=>{
+    const ds=fd(d),ih=isHol(ds);
+    const col=d.getDay()===6?'#2563eb':d.getDay()===0?'#c0392b':ih?'#7c3aed':'#000';
+    const hn=ih?`<div style="font-size:10px">${holName(ds)}</div>`:'';
+    return`<th style="text-align:center;padding:5px 2px;color:${col};font-size:14px">${DAYS[i]}<br>${d.getMonth()+1}/${d.getDate()}${hn}</th>`;
+  }).join('');
+
+  const legendHtml=DB.clinics.map((c,ci)=>{
+    const bg=printColors[ci%printColors.length];
+    const bd=printBorders[ci%printBorders.length];
+    return `<span style="display:inline-block;background:${bg};border:1px solid ${bd};padding:2px 8px;border-radius:3px;font-size:12px;margin-right:4px">■ ${c.name}</span>`;
+  }).join('')+
+  `<span style="display:inline-block;padding:2px 8px;font-size:12px;margin-right:4px;color:#888">▤ 櫃台</span>`+
+  `<span style="display:inline-block;padding:2px 8px;font-size:12px;color:#c77">◎ 流動</span>`;
+
+  // Weekly counts for print — doctors + staff
+  const docCntMap={};
+  DB.doctors.forEach(d=>{docCntMap[d.abbr]={wd:0,wk:0};});
+  const staffCntMap={};
+  DB.staff.forEach(s=>{staffCntMap[s.abbr]={wd:0,wk:0};});
+  dates.forEach((d,di)=>{
+    const ds=fd(d);const isHW=isHolOrWk(ds,d);
+    SESS.forEach(sess=>{
+      const docs=getC(curWk,di,sess,'doctors');
+      docs.forEach(abbr=>{
+        if(!docCntMap[abbr])docCntMap[abbr]={wd:0,wk:0};
+        if(isHW)docCntMap[abbr].wk++;else docCntMap[abbr].wd++;
+      });
+      const allStaff=new Set();
+      const da=getDA(curWk,di,sess);
+      docs.forEach(doc=>(da[doc]||[]).forEach(a=>allStaff.add(a)));
+      DB.clinics.forEach(c=>{
+        getCC(curWk,di,sess,c.id).forEach(a=>allStaff.add(a));
+        getCF(curWk,di,sess,c.id).forEach(a=>allStaff.add(a));
+      });
+      allStaff.forEach(abbr=>{
+        if(!staffCntMap[abbr])staffCntMap[abbr]={wd:0,wk:0};
+        if(isHW)staffCntMap[abbr].wk++;else staffCntMap[abbr].wd++;
+      });
+    });
+  });
+
+  const mkCntChip=(abbr,c)=>`<span style="display:inline-block;padding:2px 8px;border:1px solid #ccc;border-radius:10px;font-size:11px;margin-right:3px;background:#fafafa"><b>${abbr}</b> <span style="font-weight:700">${c.wd+c.wk}</span>${c.wk?`<span style="color:#b7791f;font-size:10px">(假${c.wk})</span>`:''}</span>`;
+
+  const docCntHtml=DB.doctors.filter(d=>{const c=docCntMap[d.abbr];return c&&(c.wd+c.wk)>0;})
+    .map(d=>{const c=docCntMap[d.abbr];return mkCntChip(d.abbr,c);}).join('');
+  const staffCntHtml=DB.staff.filter(s=>{const c=staffCntMap[s.abbr];return c&&(c.wd+c.wk)>0;})
+    .map(s=>{const c=staffCntMap[s.abbr];return mkCntChip(s.abbr,c);}).join('');
+
+  // One block = title + legend + counts + table (one copy per A4 landscape page)
+  const block=`
+    <h2 style="text-align:center;margin:0 0 5px;font-size:18px;font-weight:700">班表　${s0} ～ ${s6}</h2>
+    <div style="margin-bottom:5px">${legendHtml}</div>
+    <div style="margin-bottom:5px;padding:4px 8px;background:#f9f9f9;border:1px solid #ddd;border-radius:2px;display:flex;flex-wrap:wrap;gap:3px 0">
+      ${docCntHtml?`<div style="width:100%;display:flex;align-items:center;flex-wrap:wrap;gap:2px"><span style="font-size:11px;font-weight:700;color:#185fa5;margin-right:6px;white-space:nowrap">醫師：</span>${docCntHtml}</div>`:''}
+      ${staffCntHtml?`<div style="width:100%;display:flex;align-items:center;flex-wrap:wrap;gap:2px"><span style="font-size:11px;font-weight:700;color:#2d6a4f;margin-right:6px;white-space:nowrap">助理：</span>${staffCntHtml}</div>`:''}
+    </div>
+    <table style="width:100%;border-collapse:collapse;font-size:12px">
+      <thead><tr><th style="width:24px;text-align:center;background:#f0f0f0;border:1px solid #ccc;padding:4px 2px;font-size:15px">診</th>${hd}</tr></thead>
+      <tbody>${rows}</tbody>
+    </table>`;
+
+  const w=window.open('','_blank','width=1400,height=900');
+  const scriptCode=`
+  function scaleToFit(){
+    var pageH=210*3.7795;
+    var padPx=4*2*3.7795*2;
+    var available=pageH-padPx;
+    var el=document.getElementById('ci1');
+    if(!el)return;
+    var h=el.scrollHeight;
+    if(h>0&&h>available){
+      var scale=available/h;
+      el.style.transform='scale('+scale+')';
+      el.style.height=(h*scale)+'px';
+      el.parentElement.style.height=(h*scale)+'px';
+    }
+  }
+  window.addEventListener('load',function(){scaleToFit();setTimeout(function(){window.print();},700);});
+  `;
+  const html='<!DOCTYPE html><html><head><meta charset="UTF-8"><title>班表</title>'
+    +'<style>'
+    +'@page{size:A4 landscape;margin:0}'
+    +'*{box-sizing:border-box}'
+    +"html,body{margin:0;padding:0;width:297mm;height:210mm;overflow:hidden;font-family:'Noto Sans TC','Microsoft JhengHei',sans-serif;-webkit-print-color-adjust:exact;print-color-adjust:exact}"
+    +'.page{width:297mm;height:210mm;display:flex;flex-direction:column;padding:4mm}'
+    +'.copy{flex:1;overflow:hidden;min-height:0}'
+    +'.copy-inner{transform-origin:top left;width:289mm}'
+    +'table{width:100%;border-collapse:collapse;border:1px solid #ccc}'
+    +'th,td{border:1px solid #ccc}'
+    +'</style></head><body>'
+    +'<div class="page">'
+    +'<div class="copy"><div class="copy-inner" id="ci1">'+block+'</div></div>'
+    +'</div>'
+    +'<sc'+'ript>'+scriptCode+'</sc'+'ript>'
+    +'</body></html>';
+  w.document.write(html);
+  w.document.close();
+}
+
+// ===================================================
+// PAYROLL CALCULATION
+// ===================================================
+function calcPayroll(){
+  const year=parseInt(document.getElementById('pr-year').value);
+  const month=parseInt(document.getElementById('pr-month').value);
+  const pk=year+'-'+String(month).padStart(2,'0');
+  const isSettled=!!DB.settled[pk];
+  const fees=DB.fees;
+
+  // Update UI buttons/banner
+  document.getElementById('settle-btn').classList.toggle('hidden',isSettled);
+  document.getElementById('unsettle-btn').classList.toggle('hidden',!isSettled);
+  const banner=document.getElementById('settle-banner');
+  if(isSettled){
+    const s=DB.settled[pk];
+    banner.className='settled-banner';
+    banner.innerHTML=`<div>✅ 已結算　<strong>${year}年${month}月</strong>　結算時間：${s.settledAt}</div>
+      <div style="font-size:12px;color:var(--tx2)">已鎖定，不可修改</div>`;
+    banner.classList.remove('hidden');
+  } else {
+    banner.classList.add('hidden');
+  }
+
+  // If settled, use snapshot data
+  const scheduleData=isSettled?DB.settled[pk].snapshot.schedule:DB.schedule;
+  const payrollAdjData=isSettled?DB.settled[pk].snapshot.payrollAdj:DB.payrollAdj;
+  const payrollExtraData=isSettled?DB.settled[pk].snapshot.payrollExtra:DB.payrollExtra;
+  const staffData=isSettled?DB.settled[pk].snapshot.staff:DB.staff;
+
+  // Helper to get from schedule data
+  const gC=(wkIdx,di,sess,role)=>scheduleData[ck(wkIdx,di,sess,role)]||[];
+  const gDA=(wkIdx,di,sess)=>scheduleData[ck(wkIdx,di,sess,'dA')]||{};
+
+  // Count sessions
+  const cnt={};staffData.forEach(s=>{cnt[s.abbr]={wd:0,wk:0};});
+  const docStaffCnt={};staffData.forEach(s=>{docStaffCnt[s.abbr]={};});
+
+  DB.weeks.forEach((wk,wkIdx)=>{
+    wkDates(wk.startDate).forEach((d,di)=>{
+      if(d.getFullYear()!==year||d.getMonth()+1!==month)return;
+      const ds=fd(d);const isHW=isHolOrWk(ds,d);
+      SESS.forEach(sess=>{
+        const docs=gC(wkIdx,di,sess,'doctors');
+        const da=gDA(wkIdx,di,sess);
+        // Collect all staff: per-clinic ctrs/flts + legacy global + doc assistants
+        const allStaff=new Set([...gC(wkIdx,di,sess,'counters'),...gC(wkIdx,di,sess,'floats')]);
+        DB.clinics.forEach(c=>{
+          (scheduleData[ck(wkIdx,di,sess,'ctr-'+c.id)]||[]).forEach(a=>allStaff.add(a));
+          (scheduleData[ck(wkIdx,di,sess,'flt-'+c.id)]||[]).forEach(a=>allStaff.add(a));
+        });
+        docs.forEach(doc=>(da[doc]||[]).forEach(a=>allStaff.add(a)));
+        allStaff.forEach(abbr=>{
+          if(!cnt[abbr])cnt[abbr]={wd:0,wk:0};
+          if(isHW)cnt[abbr].wk++;else cnt[abbr].wd++;
+        });
+        docs.forEach(doc=>{
+          (da[doc]||[]).forEach(abbr=>{
+            if(!docStaffCnt[abbr])docStaffCnt[abbr]={};
+            docStaffCnt[abbr][doc]=(docStaffCnt[abbr][doc]||0)+1;
+          });
+        });
+      });
+    });
+  });
+
+  const boxes=document.getElementById('pr-boxes');boxes.innerHTML='';
+  let totalWage=0,totalStaff=0;
+
+  staffData.forEach(staff=>{
+    const c=cnt[staff.abbr]||{wd:0,wk:0};
+    const ek=pk+'-'+staff.id;
+    const extra=payrollExtraData[ek]||{surgeries:0,clockMinutes:0,overtimeMinutes:0,notes:''};
+    const base=staff.base||fees.sessionFee;
+    const sessWage=c.wd*base+c.wk*base*(fees.holidayMultiple||1.5);
+    const scalpel=(extra.surgeries||0)*fees.scalpelFee;
+    const clockPay=Math.round((extra.clockMinutes||0)*base/(4*60));
+    const overtimePay=Math.round((extra.overtimeMinutes||0)*(fees.overtimeRate||4.5));
+
+    let pairBonus=0;
+    if(staff.pairings){
+      staff.pairings.forEach(p=>{
+        const cnt2=(docStaffCnt[staff.abbr]||{})[p.doctorAbbr]||0;
+        pairBonus+=cnt2*(p.bonus||0);
+      });
+    }
+    const fixedBonus=staff.bonus||0;
+    const laborIns=-(fees.laborInsurance||0);
+    const healthIns=staff.hasIns?-(fees.healthInsPerPerson*(staff.insCount||1)):0;
+
+    // Deductions
+    let deductAmt=0;const dedDetails=[];
+    if(staff.deductions){
+      staff.deductions.forEach(ded=>{
+        const[sy,sm]=ded.startMonth.split('-').map(Number);
+        const offset=(year-sy)*12+(month-sm);
+        if(offset>=0&&offset<ded.periods){
+          const monthly=Math.round(ded.amount/ded.periods);
+          deductAmt-=monthly;
+          dedDetails.push(`${ded.desc} -${monthly.toLocaleString()}`);
+        }
+      });
+    }
+
+    if(c.wd===0&&c.wk===0&&deductAmt===0&&fixedBonus===0&&pairBonus===0)return;
+    totalStaff++;
+
+    const ak=pk+'-'+staff.id;
+    const ga=(field,def)=>{const k=ak+'-'+field;return payrollAdjData[k]!==undefined?payrollAdjData[k]:def;};
+    const A={sess:ga('sess',sessWage),scalpel:ga('scalpel',scalpel),clock:ga('clock',clockPay),
+      overtime:ga('overtime',overtimePay),
+      pair:ga('pair',pairBonus),fixed:ga('fixed',fixedBonus),labor:ga('labor',laborIns),
+      health:ga('health',healthIns),deduct:ga('deduct',deductAmt)};
+    const total=A.sess+A.scalpel+A.clock+A.overtime+A.pair+A.fixed+A.labor+A.health+A.deduct;
+    totalWage+=total;
+
+    const locked=isSettled;
+    const tc=total>=0?'var(--ac)':'var(--rd)';
+    const clinicName=DB.clinics.filter(c=>(staff.clinicIds||[]).includes(c.id)).map(c=>c.name).join(',') ;
+
+    const pinp=(field,val,neg)=>`<input class="pinp" type="number" value="${val}"
+      style="${neg?'color:var(--rd)':''}" ${locked?'disabled':''}
+      onchange="${locked?'':'adjPay(\''+ak+'\',\''+field+'\',this.value,\''+staff.id+'\')'}" >`;
+    const xinp=(field,val,unit)=>`<div style="display:flex;align-items:center;gap:3px">
+      <input class="pinp" type="number" value="${val}" style="width:68px" ${locked?'disabled':''}
+        onchange="${locked?'':'updExtra(\''+ek+'\',\''+field+'\',this.value)'}">
+      <span style="font-size:11px;color:var(--tx3)">${unit}</span></div>`;
+
+    const box=document.createElement('div');
+    box.className='pbox'+(locked?' settled':'');box.id='pb-'+staff.id;
+    box.innerHTML=`
+      <div class="pbh">
+        <div>
+          <span class="pbn">${staff.name}</span>
+          <span style="font-size:12px;color:var(--tx3);margin-left:7px">${staff.abbr}</span>
+          ${clinicName?`<span class="badge bbl" style="margin-left:6px">${clinicName}</span>`:''}
+          <span class="badge bg" style="margin-left:6px">平日${c.wd} 假日${c.wk}</span>
+          ${locked?'<span class="badge bpu" style="margin-left:6px">🔒 已結算</span>':''}
+        </div>
+        <div class="pbt" style="color:${tc}" id="pt-${staff.id}">$${total.toLocaleString()}</div>
+      </div>
+      <div style="padding:12px 16px">
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:9px 14px;margin-bottom:9px">
+          <div><div class="pcl">跟刀次數</div>${xinp('surgeries',extra.surgeries||0,'次')}</div>
+          <div><div class="pcl">打卡分鐘</div>${xinp('clockMinutes',extra.clockMinutes||0,'分')}</div>
+          <div><div class="pcl">加班分鐘</div>${xinp('overtimeMinutes',extra.overtimeMinutes||0,'分')}</div>
+          <div><div class="pcl">診次薪資</div>${pinp('sess',A.sess,false)}</div>
+          <div><div class="pcl">跟刀費</div>${pinp('scalpel',A.scalpel,false)}</div>
+          <div><div class="pcl">打卡費</div>${pinp('clock',A.clock,false)}</div>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(6,1fr);gap:9px 14px">
+          <div><div class="pcl">加班費</div>${pinp('overtime',A.overtime,false)}</div>
+          <div><div class="pcl">跟診加給</div>${pinp('pair',A.pair,false)}</div>
+          <div><div class="pcl">固定加給</div>${pinp('fixed',A.fixed,false)}</div>
+          <div><div class="pcl">勞保（扣）</div>${pinp('labor',A.labor,A.labor<0)}</div>
+          <div><div class="pcl">健保（扣）</div>${pinp('health',A.health,A.health<0)}</div>
+          <div><div class="pcl">代扣項目</div>${pinp('deduct',A.deduct,A.deduct<0)}</div>
+        </div>
+        <div style="margin-top:9px;display:flex;align-items:center;justify-content:space-between;gap:10px">
+          <div style="font-size:11px;color:var(--tx3)">${dedDetails.length?'代扣：'+dedDetails.join('、'):''}</div>
+          <div style="display:flex;align-items:center;gap:6px">
+            <span style="font-size:12px;color:var(--tx3)">備註：</span>
+            <input class="pinp" value="${extra.notes||''}" ${locked?'disabled':''}
+              onchange="${locked?'':'updExtra(\''+ek+'\',\'notes\',this.value)'}" style="width:160px;text-align:left">
+          </div>
+        </div>
+      </div>`;
+    boxes.appendChild(box);
+  });
+
+  document.getElementById('pr-stats').innerHTML=`
+    <div class="stcard"><div class="stl">出勤人數</div><div class="stv">${totalStaff}</div><div class="sts">本月有排班</div></div>
+    <div class="stcard"><div class="stl">薪資總額</div><div class="stv" style="color:var(--ac)">$${totalWage.toLocaleString()}</div><div class="sts">${year}年${month}月</div></div>
+    <div class="stcard"><div class="stl">診次費用</div><div class="stv">${fees.sessionFee}</div><div class="sts">元/診次</div></div>
+    <div class="stcard"><div class="stl">假日倍數</div><div class="stv">${fees.holidayMultiple}x</div><div class="sts">假日計薪倍率</div></div>`;
+}
+
+function adjPay(ak,field,val,staffId){
+  DB.payrollAdj[ak+'-'+field]=parseFloat(val)||0;save();
+  const box=document.getElementById('pb-'+staffId);if(!box)return;
+  let total=0;
+  box.querySelectorAll('input.pinp[onchange*="adjPay"]').forEach(inp=>total+=parseFloat(inp.value)||0);
+  const el=document.getElementById('pt-'+staffId);
+  if(el){el.textContent='$'+total.toLocaleString();el.style.color=total>=0?'var(--ac)':'var(--rd)';}
+}
+function updExtra(ek,field,val){
+  if(!DB.payrollExtra[ek])DB.payrollExtra[ek]={surgeries:0,clockMinutes:0,overtimeMinutes:0,notes:''};
+  if(field==='notes')DB.payrollExtra[ek][field]=val;
+  else DB.payrollExtra[ek][field]=parseFloat(val)||0;
+  save();
+}
+
+// ===================================================
+// SETTLE / UNSETTLE
+// ===================================================
+function confirmSettle(){
+  const year=parseInt(document.getElementById('pr-year').value);
+  const month=parseInt(document.getElementById('pr-month').value);
+  const pk=year+'-'+String(month).padStart(2,'0');
+  if(DB.settled[pk]){toast('此月已結算','w');return;}
+
+  // Gather per-person totals from rendered boxes
+  const boxes=document.querySelectorAll('.pbox');
+  if(!boxes.length){toast('請先按「試算薪資」再結算','w');return;}
+
+  let totalWage=0;
+  let rows='';
+  boxes.forEach(box=>{
+    const sid=box.id.replace('pb-','');
+    const staff=DB.staff.find(s=>s.id===sid);if(!staff)return;
+    const totEl=document.getElementById('pt-'+sid);
+    const tot=parseFloat(totEl?.textContent?.replace(/[$,]/g,'')||0)||0;
+    totalWage+=tot;
+    // get deduct this month
+    let dedAmt=0;
+    if(staff.deductions){
+      staff.deductions.forEach(ded=>{
+        const[sy,sm]=ded.startMonth.split('-').map(Number);
+        const offset=(year-sy)*12+(month-sm);
+        if(offset>=0&&offset<ded.periods)dedAmt+=Math.round(ded.amount/ded.periods);
+      });
+    }
+    const clin=DB.clinics.filter(c=>(staff.clinicIds||[]).includes(c.id)).map(c=>c.name).join(',') ;
+    const totColor=tot>=0?'#166534':'#9b1c1c';
+    rows+=`<tr>
+      <td style="padding:4px 8px;font-weight:500">${staff.name}</td>
+      <td style="padding:4px 8px;font-size:11px;color:#666">${clin}</td>
+      <td style="padding:4px 8px;text-align:right;font-family:monospace;color:${totColor};font-weight:700">${tot>=0?'$'+tot.toLocaleString():'- $'+Math.abs(tot).toLocaleString()}</td>
+      <td style="padding:4px 8px;text-align:right;font-size:11px;color:#c0392b">${dedAmt>0?'-$'+dedAmt.toLocaleString():'-'}</td>
+    </tr>`;
+  });
+
+  document.getElementById('settle-confirm-text').innerHTML=`
+    <div style="background:var(--wn2);border:1px solid #fcd34d;border-radius:var(--r2);padding:10px 14px;margin-bottom:12px">
+      <div style="font-size:14px;font-weight:700;margin-bottom:4px">⚠️ 確認結算 ${year}年${month}月</div>
+      <div style="font-size:13px;color:var(--tx2)">共 ${boxes.length} 位員工　薪資合計 <strong style="font-size:16px;color:#166534">$${totalWage.toLocaleString()}</strong></div>
+    </div>
+    <div style="border:1px solid var(--bd);border-radius:var(--r2);overflow:hidden;margin-bottom:12px;max-height:260px;overflow-y:auto">
+      <table style="width:100%;border-collapse:collapse;font-size:13px">
+        <thead><tr style="background:var(--sf2)">
+          <th style="padding:5px 8px;text-align:left;font-size:11px;color:var(--tx2)">姓名</th>
+          <th style="padding:5px 8px;text-align:left;font-size:11px;color:var(--tx2)">診所</th>
+          <th style="padding:5px 8px;text-align:right;font-size:11px;color:var(--tx2)">實領金額</th>
+          <th style="padding:5px 8px;text-align:right;font-size:11px;color:var(--tx2)">本月代扣</th>
+        </tr></thead>
+        <tbody>${rows}</tbody>
+      </table>
+    </div>
+    <div style="font-size:13px;color:var(--tx2);font-weight:500;margin-bottom:6px">結算後將執行以下動作：</div>
+    <ul style="font-size:12px;color:var(--tx2);margin:0 0 0 14px;line-height:2">
+      <li>員工代扣餘額自動扣除本月代扣金額</li>
+      <li>本月薪資與排班資料鎖定，不可再修改</li>
+      <li>可至「結算紀錄」查看歷史存檔</li>
+      <li>如需修改需由管理者輸入密碼解鎖</li>
+    </ul>`;
+  openM('modal-settle-confirm');
+}
+
+function doSettle(){
+  const year=parseInt(document.getElementById('pr-year').value);
+  const month=parseInt(document.getElementById('pr-month').value);
+  const pk=year+'-'+String(month).padStart(2,'0');
+
+  // Update deduction paid amounts in staff
+  DB.staff.forEach(staff=>{
+    if(staff.deductions){
+      staff.deductions.forEach(ded=>{
+        const[sy,sm]=ded.startMonth.split('-').map(Number);
+        const offset=(year-sy)*12+(month-sm);
+        if(offset>=0&&offset<ded.periods){
+          const monthly=Math.round(ded.amount/ded.periods);
+          ded.paid=(ded.paid||0)+monthly;
+        }
+      });
+    }
+  });
+
+  // Snapshot current schedule (only relevant weeks), staff, payroll data
+  const relWeeks={};
+  const schedSnapshot={};
+  DB.weeks.forEach((wk,wkIdx)=>{
+    wkDates(wk.startDate).forEach((d,di)=>{
+      if(d.getFullYear()!==year||d.getMonth()+1!==month)return;
+      SESS.forEach(sess=>{
+        ['doctors','counters','floats','dA'].forEach(role=>{
+          const k=ck(wkIdx,di,sess,role);
+          if(DB.schedule[k])schedSnapshot[k]=JSON.parse(JSON.stringify(DB.schedule[k]));
+        });
+      });
+    });
+  });
+
+  const adjSnapshot={};
+  const extraSnapshot={};
+  Object.keys(DB.payrollAdj).forEach(k=>{if(k.startsWith(pk+'-'))adjSnapshot[k]=DB.payrollAdj[k];});
+  Object.keys(DB.payrollExtra).forEach(k=>{if(k.startsWith(pk+'-'))extraSnapshot[k]=JSON.parse(JSON.stringify(DB.payrollExtra[k]));});
+
+  DB.settled[pk]={
+    settledAt:new Date().toLocaleString('zh-TW'),
+    year,month,
+    snapshot:{
+      staff:JSON.parse(JSON.stringify(DB.staff)),
+      schedule:schedSnapshot,
+      payrollAdj:adjSnapshot,
+      payrollExtra:extraSnapshot,
+    }
+  };
+
+  save();
+  closeM('modal-settle-confirm');
+  calcPayroll();
+  renderStaffTable();
+  toast(`${year}年${month}月薪資已結算，代扣金額已更新`,'s');
+}
+
+// ===================================================
+// ADMIN / UNSETTLE
+// ===================================================
+let pendingUnsettlePk='';
+function unsettle(){
+  const year=parseInt(document.getElementById('pr-year').value);
+  const month=parseInt(document.getElementById('pr-month').value);
+  pendingUnsettlePk=year+'-'+String(month).padStart(2,'0');
+  document.getElementById('admin-pw-input').value='';
+  openM('modal-admin-pw');
+}
+
+async function verifyAdminAndUnsettle(){
+  const pw=document.getElementById('admin-pw-input').value;
+  const hash=await sha256(pw);
+  if(DB.adminPwHash&&hash!==DB.adminPwHash){
+    toast('密碼錯誤','e');return;
+  }
+  if(!DB.adminPwHash&&pw!==''){
+    toast('密碼錯誤（尚未設定密碼，請留空）','e');return;
+  }
+  // Restore deductions
+  const pk=pendingUnsettlePk;
+  const settled=DB.settled[pk];
+  if(settled){
+    const [y,m]=pk.split('-').map(Number);
+    // Reverse deduction paid amounts
+    DB.staff.forEach(staff=>{
+      if(staff.deductions){
+        staff.deductions.forEach(ded=>{
+          const[sy,sm]=ded.startMonth.split('-').map(Number);
+          const offset=(y-sy)*12+(m-sm);
+          if(offset>=0&&offset<ded.periods){
+            const monthly=Math.round(ded.amount/ded.periods);
+            ded.paid=Math.max(0,(ded.paid||0)-monthly);
+          }
+        });
+      }
+    });
+    delete DB.settled[pk];
+  }
+  save();
+  closeM('modal-admin-pw');
+  calcPayroll();
+  renderStaffTable();
+  toast('已取消結算，可重新修改','s');
+}
+
+async function saveAdminPw(){
+  const cur=document.getElementById('admin-cur-pw').value;
+  const newPw=document.getElementById('admin-new-pw').value;
+  const newPw2=document.getElementById('admin-new-pw2').value;
+  if(newPw!==newPw2){toast('兩次密碼不一致','e');return;}
+  const curHash=await sha256(cur);
+  if(DB.adminPwHash&&curHash!==DB.adminPwHash){toast('目前密碼錯誤','e');return;}
+  if(!DB.adminPwHash&&cur!==''){toast('目前密碼錯誤（尚未設定，請留空）','e');return;}
+  DB.adminPwHash=await sha256(newPw);
+  save();
+  toast('管理者密碼已更新','s');
+  document.getElementById('admin-cur-pw').value='';
+  document.getElementById('admin-new-pw').value='';
+  document.getElementById('admin-new-pw2').value='';
+}
+
+async function sha256(msg){
+  const buf=await crypto.subtle.digest('SHA-256',new TextEncoder().encode(msg));
+  return Array.from(new Uint8Array(buf)).map(b=>b.toString(16).padStart(2,'0')).join('');
+}
+
+// ===================================================
+// HISTORY
+// ===================================================
+function renderHistory(){
+  const list=document.getElementById('history-list');
+  const pks=Object.keys(DB.settled).sort().reverse();
+  if(!pks.length){list.innerHTML='<div style="padding:20px;color:var(--tx3)">尚無結算紀錄</div>';return;}
+  list.innerHTML=pks.map(pk=>{
+    const s=DB.settled[pk];
+    const total=Object.keys(s.snapshot.payrollAdj)
+      .filter(k=>k.startsWith(pk+'-'))
+      .reduce((sum,k)=>sum+(parseFloat(s.snapshot.payrollAdj[k])||0),0);
+    return `<div class="card" style="margin-bottom:12px">
+      <div class="ch">
+        <div>
+          <div class="ct">${s.year}年${s.month}月 薪資結算</div>
+          <div style="font-size:12px;color:var(--tx3)">結算時間：${s.settledAt}</div>
+        </div>
+        <div style="text-align:right">
+          <div style="font-size:18px;font-weight:700;color:var(--ac);font-family:'DM Mono',monospace">$${total.toLocaleString()}</div>
+          <span class="badge bg">已結算</span>
+        </div>
+      </div>
+      <div class="cb" style="padding:12px 18px">
+        <div style="display:flex;gap:8px;flex-wrap:wrap">
+          ${s.snapshot.staff.filter(st=>{
+            return Object.keys(s.snapshot.payrollAdj).some(k=>k.startsWith(pk+'-'+st.id+'-'));
+          }).map(st=>`<span class="badge bbl">${st.name}</span>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+// ===================================================
+// PRINT PAYSLIPS
+// ===================================================
+function printPayslips(){
+  const year=parseInt(document.getElementById('pr-year').value);
+  const month=parseInt(document.getElementById('pr-month').value);
+  const boxes=document.querySelectorAll('.pbox');
+  if(!boxes.length){toast('請先試算薪資','e');return;}
+  let slips='';
+  boxes.forEach(box=>{
+    const sid=box.id.replace('pb-','');
+    const staff=DB.staff.find(s=>s.id===sid);if(!staff)return;
+    const tot=document.getElementById('pt-'+sid)?.textContent||'';
+    const badge=box.querySelector('.badge.bg')?.textContent||'';
+    const vals={};
+    box.querySelectorAll('input.pinp[onchange*="adjPay"]').forEach(inp=>{
+      const m=inp.getAttribute('onchange')?.match(/,'(\w+)',/);if(m)vals[m[1]]=parseFloat(inp.value)||0;
+    });
+    let sur=0,clk=0,ot=0,notes='';
+    box.querySelectorAll('input.pinp[onchange*="updExtra"]').forEach(inp=>{
+      const m=inp.getAttribute('onchange')?.match(/,'(\w+)',/);if(!m)return;
+      if(m[1]==='surgeries')sur=parseFloat(inp.value)||0;
+      else if(m[1]==='clockMinutes')clk=parseFloat(inp.value)||0;
+      else if(m[1]==='overtimeMinutes')ot=parseFloat(inp.value)||0;
+      else if(m[1]==='notes')notes=inp.value;
+    });
+    slips+=`<div class="sl">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px">
+        <div><div style="font-size:22px;font-weight:700">${staff.name} <span style="font-size:15px;color:#666">(${staff.abbr})</span></div>
+          <div style="font-size:14px;color:#666">${year}年${month}月　${badge}</div></div>
+        <div style="text-align:right"><div style="font-size:28px;font-weight:700;color:#2d6a4f">${tot}</div><div style="font-size:13px;color:#666">實領</div></div>
+      </div>
+      <table style="width:100%;border-collapse:collapse;font-size:15px">
+        <tr style="background:#f5f5f5"><th colspan="4" style="padding:5px 10px;text-align:left;border:1px solid #ddd">薪資明細</th></tr>
+        ${(()=>{
+          const td=(label,val,color)=>`<td style="padding:5px 10px;border:1px solid #eee${color?';color:'+color:''}">${label}</td><td style="text-align:right;border:1px solid #eee;padding:5px 10px${color?';color:'+color:''}">${val.toLocaleString()}</td>`;
+          // Build pairs: [label, value, color?]
+          const items=[
+            ['診次薪資', vals.sess||0, null],
+            ['固定加給', vals.fixed||0, null],
+            ['跟刀費'+(sur?`(${sur}次)`:''), vals.scalpel||0, null],
+            ['打卡費'+(clk?`(${clk}分)`:''), vals.clock||0, null],
+            ['加班費'+(ot?`(${ot}分)`:''), vals.overtime||0, null],
+            ['跟診加給', vals.pair||0, null],
+            ['代扣項目', vals.deduct||0, vals.deduct<0?'#c0392b':null],
+            ['勞保', vals.labor||0, vals.labor<0?'#c0392b':null],
+            ['健保', vals.health||0, vals.health<0?'#c0392b':null],
+          ].filter(([,v])=>v!==0); // remove zero items
+          // Pair into 2-column rows
+          const rows2=[];
+          for(let i=0;i<items.length;i+=2){
+            const a=items[i],b=items[i+1];
+            rows2.push(`<tr>${td(a[0],a[1],a[2])}${b?td(b[0],b[1],b[2]):'<td colspan="2"></td>'}</tr>`);
+          }
+          return rows2.join('');
+        })()}
+        ${notes?`<tr><td colspan="4" style="padding:5px 10px;border:1px solid #eee">備註：${notes}</td></tr>`:''}
+      </table>
+      <div style="text-align:right;margin-top:10px;font-size:13px;color:#999">員工簽名：＿＿＿＿＿＿</div>
+    </div><div class="dv"></div>`;
+  });
+  const w=window.open('','_blank','width=900,height=700');
+  w.document.write(`<!DOCTYPE html><html><head><meta charset="UTF-8"><title>薪資條</title>
+  <style>@page{size:A4;margin:14mm}body{font-family:'Noto Sans TC',sans-serif}.sl{padding:20px 0;page-break-after:always}.dv{display:none}</style>
+  </head><body>${slips}</body></html>`);
+  w.document.close();setTimeout(()=>w.print(),500);
+}
+
+// ===================================================
+// CLINIC SETTINGS
+// ===================================================
+let eClinicId=null;
+function renderClinicTable(){
+  document.getElementById('clinic-tbody').innerHTML=DB.clinics.map(c=>`
+    <tr><td><strong>${c.name}</strong></td><td style="color:var(--tx3)">${c.desc||'-'}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn bs bxs" onclick="openClinicModal('${c.id}')">編輯</button>
+      <button class="btn bd2 bxs" onclick="deleteClinic('${c.id}')">刪除</button>
+    </div></td></tr>`).join('');
+}
+function openClinicModal(id){
+  eClinicId=id||null;
+  document.getElementById('mclin-title').textContent=id?'編輯診所':'新增診所';
+  if(id){const c=DB.clinics.find(c=>c.id===id);
+    document.getElementById('mclin-name').value=c.name;
+    document.getElementById('mclin-desc').value=c.desc||'';
+  }else{document.getElementById('mclin-name').value='';document.getElementById('mclin-desc').value='';}
+  openM('modal-clinic');
+}
+function saveClinic(){
+  const name=document.getElementById('mclin-name').value.trim();
+  if(!name){toast('請輸入診所名稱','e');return;}
+  const desc=document.getElementById('mclin-desc').value.trim();
+  if(eClinicId){Object.assign(DB.clinics.find(c=>c.id===eClinicId),{name,desc});}
+  else DB.clinics.push({id:'c'+Date.now(),name,desc});
+  save();closeM('modal-clinic');renderClinicTable();populateClinicFilters();toast('已儲存','s');
+}
+function deleteClinic(id){
+  if(!confirm('確定刪除此診所？相關醫師和助理的診所設定將清除。'))return;
+  DB.clinics=DB.clinics.filter(c=>c.id!==id);
+  DB.doctors.forEach(d=>{d.clinicIds=(d.clinicIds||[]).filter(c=>c!==id);});
+  DB.staff.forEach(s=>{s.clinicIds=(s.clinicIds||[]).filter(c=>c!==id);});
+  save();renderClinicTable();renderDocTable();renderStaffTable();populateClinicFilters();toast('已刪除','s');
+}
+
+// Helper: render multi-clinic checkbox selector
+function renderClinicChips(containerId, selectedIds){
+  const el=document.getElementById(containerId);if(!el)return;
+  el.innerHTML=DB.clinics.map((c,i)=>{
+    const col=CLIN_COLORS[i%CLIN_COLORS.length];
+    const sel=(selectedIds||[]).includes(c.id);
+    return `<span onclick="toggleClinicChip(this,'${c.id}')"
+      style="display:inline-flex;align-items:center;padding:4px 12px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:500;
+      border:2px solid ${sel?col.label:col.border};background:${sel?col.bg:'var(--sf)'};color:${sel?col.label:'var(--tx3)'};
+      transition:all .15s;" data-clinid="${c.id}" data-sel="${sel?'1':'0'}">${c.name}</span>`;
+  }).join('');
+}
+function toggleClinicChip(el,clinId){
+  const isSel=el.dataset.sel==='1';
+  const idx=DB.clinics.findIndex(c=>c.id===clinId);
+  const col=CLIN_COLORS[idx%CLIN_COLORS.length];
+  if(isSel){
+    el.style.borderColor=col.border;el.style.background='var(--sf)';el.style.color='var(--tx3)';
+    el.dataset.sel='0';
+  } else {
+    el.style.borderColor=col.label;el.style.background=col.bg;el.style.color=col.label;
+    el.dataset.sel='1';
+  }
+}
+function getSelectedClinicIds(containerId){
+  return Array.from(document.querySelectorAll(`#${containerId} [data-sel="1"]`)).map(el=>el.dataset.clinid);
+}
+
+// ===================================================
+// DOCTOR SETTINGS
+// ===================================================
+let eDoctorId=null;
+function renderDocTable(){
+  document.getElementById('doctor-tbody').innerHTML=DB.doctors.map(d=>{
+    const clinNames=(d.clinicIds||[]).map(id=>DB.clinics.find(c=>c.id===id)?.name).filter(Boolean);
+    const clinBadges=clinNames.map(n=>`<span class="badge bbl">${n}</span>`).join(' ')||'-';
+    return`<tr><td><strong>${d.abbr}</strong></td><td>${d.name}</td>
+    <td style="white-space:nowrap">${clinBadges}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn bs bxs" onclick="openDoctorModal('${d.id}')">編輯</button>
+      <button class="btn bd2 bxs" onclick="delDoctor('${d.id}')">刪除</button>
+    </div></td></tr>`;
+  }).join('');
+}
+function openDoctorModal(id){
+  eDoctorId=id||null;
+  document.getElementById('mdoc-title').textContent=id?'編輯醫師':'新增醫師';
+  const cur=id?DB.doctors.find(d=>d.id===id):null;
+  if(cur){
+    document.getElementById('mdoc-abbr').value=cur.abbr;
+    document.getElementById('mdoc-name').value=cur.name;
+    renderClinicChips('mdoc-clinics',cur.clinicIds||[]);
+  } else {
+    ['mdoc-abbr','mdoc-name'].forEach(i=>document.getElementById(i).value='');
+    renderClinicChips('mdoc-clinics',[]);
+  }
+  openM('modal-doctor');
+}
+function saveDoctor(){
+  const abbr=document.getElementById('mdoc-abbr').value.trim();
+  const name=document.getElementById('mdoc-name').value.trim();
+  if(!abbr||!name){toast('請填寫簡稱和姓名','e');return;}
+  const clinicIds=getSelectedClinicIds('mdoc-clinics');
+  if(eDoctorId)Object.assign(DB.doctors.find(d=>d.id===eDoctorId),{abbr,name,clinicIds});
+  else DB.doctors.push({id:'d'+Date.now(),abbr,name,clinicIds});
+  save();closeM('modal-doctor');renderDocTable();toast('已儲存','s');
+}
+function delDoctor(id){if(!confirm('確定刪除？'))return;DB.doctors=DB.doctors.filter(d=>d.id!==id);save();renderDocTable();toast('已刪除','s');}
+
+// ===================================================
+// STAFF SETTINGS
+// ===================================================
+let eStaffId=null,tDeds=[],tPairs=[];
+function calcRemaining(staff){
+  let rem=0;
+  if(!staff.deductions)return 0;
+  staff.deductions.forEach(ded=>{
+    const monthly=Math.round(ded.amount/ded.periods);
+    const paidP=Math.round((ded.paid||0)/monthly)||0;
+    const leftP=Math.max(0,ded.periods-paidP);
+    rem+=leftP*monthly;
+  });
+  return rem;
+}
+function renderStaffTable(){
+  document.getElementById('staff-tbody').innerHTML=DB.staff.map(s=>{
+    const clinNames=(s.clinicIds||[]).map(id=>DB.clinics.find(c=>c.id===id)?.name).filter(Boolean);
+    const clinBadges=clinNames.map(n=>`<span class="badge bbl">${n}</span>`).join(' ')||'-';
+    const insStr=s.hasIns?`<span class="badge bg">${s.insCount}人</span>`:'<span class="badge brd">未保</span>';
+    const pairStr=s.pairings?.length?`<span class="badge bbl">${s.pairings.length}組</span>`:'-';
+    const dedStr=s.deductions?.length?`<span class="badge byw">${s.deductions.length}項</span>`:'-';
+    const rem=calcRemaining(s);
+    const remStr=rem>0?`<span style="color:var(--rd);font-weight:600">$${rem.toLocaleString()}</span>`:'<span style="color:var(--tx3)">-</span>';
+    return`<tr><td><strong>${s.abbr}</strong></td><td>${s.name}</td>
+    <td style="white-space:nowrap">${clinBadges}</td>
+    <td>${insStr}</td><td>${s.insCount||0}</td><td>${(s.bonus||0).toLocaleString()}</td>
+    <td>${s.base||'依設定'}</td><td>${pairStr}</td><td>${dedStr}</td><td>${remStr}</td>
+    <td><div style="display:flex;gap:4px">
+      <button class="btn bs bxs" onclick="openStaffModal('${s.id}')">編輯</button>
+      <button class="btn bd2 bxs" onclick="delStaff('${s.id}')">刪除</button>
+    </div></td></tr>`;
+  }).join('');
+}
+function openStaffModal(id){
+  eStaffId=id||null;
+  document.getElementById('mstaff-title').textContent=id?'編輯助理':'新增助理';
+  const cur=id?DB.staff.find(s=>s.id===id):null;
+  if(cur){
+    document.getElementById('ms-abbr').value=cur.abbr;document.getElementById('ms-name').value=cur.name;
+    renderClinicChips('ms-clinics',cur.clinicIds||[]);
+    document.getElementById('ms-base').value=cur.base||'';document.getElementById('ms-bonus').value=cur.bonus||0;
+    document.getElementById('ms-ins-count').value=cur.insCount||0;document.getElementById('ms-has-ins').checked=cur.hasIns||false;
+    tDeds=JSON.parse(JSON.stringify(cur.deductions||[]));tPairs=JSON.parse(JSON.stringify(cur.pairings||[]));
+  }else{
+    ['ms-abbr','ms-name','ms-base'].forEach(i=>document.getElementById(i).value='');
+    renderClinicChips('ms-clinics',[]);
+    document.getElementById('ms-bonus').value=0;document.getElementById('ms-ins-count').value=0;document.getElementById('ms-has-ins').checked=false;
+    tDeds=[];tPairs=[];
+  }
+  renderDeds();renderPairs();openM('modal-staff');
+}
+function renderPairs(){
+  const el=document.getElementById('ms-pairs');
+  if(!tPairs.length){el.innerHTML='<div style="font-size:12px;color:var(--tx3);padding:5px">尚無配對</div>';return;}
+  el.innerHTML=tPairs.map((p,i)=>`
+    <div class="pair-item">
+      <span class="chip dr" style="min-width:28px;justify-content:center">${p.doctorAbbr}</span>
+      <span style="font-size:12px;color:var(--tx2)">${DB.doctors.find(d=>d.abbr===p.doctorAbbr)?.name||''}</span>
+      <span style="flex:1"></span>
+      <span style="font-size:12px;color:var(--tx3)">加給/診</span>
+      <input type="number" style="width:78px;padding:3px 6px;border:1px solid var(--bd2);border-radius:4px;font-size:13px;text-align:right"
+        value="${p.bonus||0}" onchange="tPairs[${i}].bonus=parseFloat(this.value)||0"> 元
+      <button class="btn bd2 bxs" onclick="tPairs.splice(${i},1);renderPairs()">✕</button>
+    </div>`).join('');
+}
+function addStaffPairing(){
+  const list=DB.doctors.map(d=>d.abbr+' ('+d.name+')').join('\n');
+  const abbr=prompt('輸入要配對的醫師簡稱：\n'+list);
+  if(!abbr)return;
+  const doc=DB.doctors.find(d=>d.abbr===abbr.trim());
+  if(!doc){toast('找不到此醫師','e');return;}
+  if(tPairs.find(p=>p.doctorAbbr===doc.abbr)){toast('此醫師已設定','e');return;}
+  tPairs.push({doctorAbbr:doc.abbr,bonus:0});renderPairs();
+}
+function renderDeds(){
+  const el=document.getElementById('ms-deds');
+  if(!tDeds.length){el.innerHTML='<div style="font-size:12px;color:var(--tx3);padding:7px">尚無代扣項目</div>';return;}
+  el.innerHTML=tDeds.map((d,i)=>`
+    <div class="ded-item">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:7px">
+        <strong style="font-size:12px">代扣 ${i+1}</strong>
+        <button class="btn bd2 bxs" onclick="tDeds.splice(${i},1);renderDeds()">刪除</button>
+      </div>
+      <div class="fr2">
+        <div class="fg"><label class="fl">項目說明</label><input class="fc" value="${d.desc}" onchange="tDeds[${i}].desc=this.value"></div>
+        <div class="fg"><label class="fl">總金額</label><input type="number" class="fc" value="${d.amount}" onchange="tDeds[${i}].amount=parseFloat(this.value)||0"></div>
+      </div>
+      <div class="fr3">
+        <div class="fg"><label class="fl">分幾期</label><input type="number" class="fc" value="${d.periods}" onchange="tDeds[${i}].periods=parseInt(this.value)||1">
+          <div class="fh">每期 ${Math.round(d.amount/(d.periods||1)).toLocaleString()}</div></div>
+        <div class="fg"><label class="fl">起扣月份</label><input type="month" class="fc" value="${d.startMonth}" onchange="tDeds[${i}].startMonth=this.value"></div>
+        <div class="fg"><label class="fl">已扣金額</label><input type="number" class="fc" value="${d.paid||0}" onchange="tDeds[${i}].paid=parseFloat(this.value)||0"></div>
+      </div>
+    </div>`).join('');
+}
+function addDed(){tDeds.push({desc:'',amount:0,periods:1,startMonth:'2026-01',paid:0});renderDeds();}
+function saveStaff(){
+  const abbr=document.getElementById('ms-abbr').value.trim();
+  const name=document.getElementById('ms-name').value.trim();
+  if(!abbr||!name){toast('請填寫簡稱和姓名','e');return;}
+  const data={abbr,name,
+    clinicIds:getSelectedClinicIds('ms-clinics'),
+    base:parseFloat(document.getElementById('ms-base').value)||null,
+    bonus:parseFloat(document.getElementById('ms-bonus').value)||0,
+    insCount:parseInt(document.getElementById('ms-ins-count').value)||0,
+    hasIns:document.getElementById('ms-has-ins').checked,
+    pairings:JSON.parse(JSON.stringify(tPairs)),
+    deductions:JSON.parse(JSON.stringify(tDeds)),
+  };
+  if(eStaffId)Object.assign(DB.staff.find(s=>s.id===eStaffId),data);
+  else DB.staff.push({id:'s'+Date.now(),...data});
+  save();closeM('modal-staff');renderStaffTable();toast('已儲存','s');
+}
+function delStaff(id){if(!confirm('確定刪除？'))return;DB.staff=DB.staff.filter(s=>s.id!==id);save();renderStaffTable();toast('已刪除','s');}
+
+// ===================================================
+// FEE SETTINGS
+// ===================================================
+function renderFeeForm(){
+  const f=DB.fees;
+  document.getElementById('fee-form').innerHTML=`
+    <div class="fg"><label class="fl">診次費用（元/次）</label>
+      <input type="number" class="fc" value="${f.sessionFee}" oninput="DB.fees.sessionFee=parseFloat(this.value)||0;renderFeePrev()"></div>
+    <div class="fg"><label class="fl">假日加班乘倍數</label>
+      <input type="number" step="0.1" class="fc" value="${f.holidayMultiple}" oninput="DB.fees.holidayMultiple=parseFloat(this.value)||1;renderFeePrev()">
+      <div class="fh">假日薪資 = 診次費 × 倍數</div></div>
+    <div class="fg"><label class="fl">跟刀費用（元/次）</label>
+      <input type="number" class="fc" value="${f.scalpelFee}" oninput="DB.fees.scalpelFee=parseFloat(this.value)||0;renderFeePrev()"></div>
+    <div class="fg"><label class="fl">勞保費用（元/月）</label>
+      <input type="number" class="fc" value="${f.laborInsurance}" oninput="DB.fees.laborInsurance=parseFloat(this.value)||0;renderFeePrev()"></div>
+    <div class="fg"><label class="fl">健保費用（元/人/月）</label>
+      <input type="number" class="fc" value="${f.healthInsPerPerson}" oninput="DB.fees.healthInsPerPerson=parseFloat(this.value)||0;renderFeePrev()"></div>
+    <div class="fg"><label class="fl">加班費率（元/分鐘）</label>
+      <input type="number" step="0.1" class="fc" value="${f.overtimeRate||4.5}" oninput="DB.fees.overtimeRate=parseFloat(this.value)||0;save();renderFeePrev()">
+      <div class="fh">加班費 = 加班分鐘 × 費率</div></div>
+    <button class="btn bp" onclick="save();toast('已儲存','s')">儲存費用設定</button>`;
+  renderFeePrev();
+}
+function renderFeePrev(){
+  const f=DB.fees;const mr=(f.sessionFee/(4*60)).toFixed(2);
+  document.getElementById('fee-prev').innerHTML=`
+    <div style="font-size:13px;display:flex;flex-direction:column;gap:9px">
+      <div style="background:var(--sf2);padding:11px;border-radius:var(--r2);border:1px solid var(--bd)">
+        <div style="font-weight:600;margin-bottom:6px">計算公式</div>
+        <div>打卡費率 = ${f.sessionFee} ÷ 240分 = <strong>${mr} 元/分</strong></div>
+        <div style="margin-top:4px">加班費率 = <strong>${f.overtimeRate||4.5} 元/分</strong>（自訂）</div>
+      </div>
+      <div style="background:var(--ac3);padding:11px;border-radius:var(--r2)">
+        <div style="font-weight:600;margin-bottom:5px;color:var(--ac)">範例試算</div>
+        <div>平日10診 = <strong>${(10*f.sessionFee).toLocaleString()}</strong></div>
+        <div>假日5診×${f.holidayMultiple} = <strong>${(5*f.sessionFee*f.holidayMultiple).toLocaleString()}</strong></div>
+        <div>跟刀3次 = <strong>${(3*f.scalpelFee).toLocaleString()}</strong></div>
+        <div>打卡30分 = <strong>${(30*parseFloat(mr)).toFixed(0)}</strong></div>
+        <div>加班60分 = <strong>${(60*(f.overtimeRate||4.5)).toFixed(0)}</strong></div>
+      </div>
+    </div>`;
+}
+
+// ===================================================
+// HOLIDAY SETTINGS
+// ===================================================
+function renderHolPage(){
+  const yel=document.getElementById('hol-yr');if(!yel)return;
+  if(!yel.children.length)[2025,2026,2027].forEach(y=>yel.appendChild(new Option(y+'年',y)));
+  if(!yel.value)yel.value=2026;
+  const twel=document.getElementById('tw-hol-yr');
+  if(twel&&!twel.children.length){[2025,2026,2027].forEach(y=>twel.appendChild(new Option(y+'年',y)));twel.value=2026;}
+  const yr=parseInt(yel.value)||2026;
+  const filt=DB.holidays.filter(h=>h.date.startsWith(yr+'')).sort((a,b)=>a.date.localeCompare(b.date));
+  document.getElementById('hol-tbody').innerHTML=filt.map(h=>`
+    <tr><td>${h.date}</td><td>${h.name}</td>
+    <td><button class="btn bd2 bxs" onclick="delHol('${h.date}')">刪除</button></td></tr>
+  `).join('')||'<tr><td colspan="3" style="text-align:center;color:var(--tx3);padding:12px">尚無假日</td></tr>';
+}
+function openHolModal(){document.getElementById('mhol-date').value='';document.getElementById('mhol-name').value='';openM('modal-hol');}
+function saveHol(){
+  const date=document.getElementById('mhol-date').value;
+  const name=document.getElementById('mhol-name').value.trim();
+  if(!date||!name){toast('請填寫日期和名稱','e');return;}
+  if(DB.holidays.find(h=>h.date===date)){toast('此日期已存在','e');return;}
+  DB.holidays.push({date,name});save();closeM('modal-hol');renderHolPage();renderSched();toast('已新增','s');
+}
+function delHol(date){DB.holidays=DB.holidays.filter(h=>h.date!==date);save();renderHolPage();renderSched();}
+function importTWHol(){
+  const yr=parseInt(document.getElementById('tw-hol-yr').value)||2026;
+  const list=[[yr+'-01-01','元旦'],[yr+'-02-17','農曆除夕'],[yr+'-02-18','農曆初一'],[yr+'-02-19','農曆初二'],
+    [yr+'-02-20','農曆初三'],[yr+'-04-04','兒童節'],[yr+'-04-05','清明節'],[yr+'-05-01','勞動節'],
+    [yr+'-06-19','端午節'],[yr+'-09-25','中秋節'],[yr+'-10-10','國慶日']];
+  let n=0;list.forEach(([d,nm])=>{if(!DB.holidays.find(h=>h.date===d)){DB.holidays.push({date:d,name:nm});n++;}});
+  save();renderHolPage();renderSched();toast(`匯入${n}個假日`,'s');
+}
+
+// ===================================================
+// MODALS
+// ===================================================
+function openM(id){document.getElementById(id).classList.remove('hidden');}
+function closeM(id){document.getElementById(id).classList.add('hidden');}
+document.querySelectorAll('.mo').forEach(o=>o.addEventListener('click',e=>{if(e.target===o)closeM(o.id);}));
+function toast(msg,type=''){
+  const el=document.createElement('div');el.className='ts '+(type||'');
+  el.textContent=(type==='s'?'✓ ':type==='e'?'✗ ':type==='w'?'⚠ ':'')+msg;
+  document.getElementById('tc2').appendChild(el);
+  setTimeout(()=>{el.style.opacity='0';el.style.transition='opacity .3s';setTimeout(()=>el.remove(),300);},2800);
+}
+
+// ===================================================
+// BACKUP PAGE INIT
+// ===================================================
+function renderBackupPage(){
+  const yrs=[2024,2025,2026,2027,2028];
+  ['export-year','cleanup-year'].forEach(id=>{
+    const el=document.getElementById(id);if(!el)return;
+    el.innerHTML='';yrs.forEach(y=>el.appendChild(new Option(y+'年',y)));el.value=2026;
+  });
+  previewCleanup();
+  renderDataSizeInfo();
+  // Show auto-backup status
+  const infoEl=document.getElementById('auto-backup-info');
+  if(infoEl){
+    const raw=localStorage.getItem('dcs4_auto');
+    if(raw){
+      try{
+        const d=JSON.parse(raw);
+        const dt=d._exportDate?new Date(d._exportDate).toLocaleString('zh-TW'):'未知';
+        infoEl.textContent='最近自動備份時間：'+dt;
+      }catch(e){infoEl.textContent='有自動備份資料';}
+    }else{
+      infoEl.textContent='尚無自動備份（關閉網頁後會自動儲存）';
+    }
+  }
+}
+function downloadAutoBackup(){
+  const raw=localStorage.getItem('dcs4_auto');
+  if(!raw){toast('尚無自動備份資料','w');return;}
+  try{
+    const d=JSON.parse(raw);
+    const dt=d._exportDate?new Date(d._exportDate):new Date();
+    const ts=dt.getFullYear()+''+String(dt.getMonth()+1).padStart(2,'0')+String(dt.getDate()).padStart(2,'0');
+    const blob=new Blob([raw],{type:'application/json'});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement('a');
+    a.href=url;a.download='診所自動備份_'+ts+'.json';
+    document.body.appendChild(a);a.click();
+    document.body.removeChild(a);
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    toast('下載自動備份檔','s');
+  }catch(e){toast('下載失敗','e');}
+}
+
+function renderDataSizeInfo(){
+  const el=document.getElementById('data-size-info');if(!el)return;
+  const raw=JSON.stringify(DB);
+  const bytes=new TextEncoder().encode(raw).length;
+  const kb=(bytes/1024).toFixed(1);
+  const ls=localStorage.getItem('dcs4')||'';
+  const lsKb=(new TextEncoder().encode(ls).length/1024).toFixed(1);
+
+  // Count by year
+  const yearStats={};
+  DB.weeks.forEach(wk=>{
+    const y=wk.startDate.substring(0,4);
+    yearStats[y]=(yearStats[y]||0)+1;
+  });
+  const yrRows=Object.entries(yearStats).sort().map(([y,n])=>{
+    const settledCount=Object.keys(DB.settled).filter(pk=>pk.startsWith(y)).length;
+    return `<tr><td style="padding:4px 10px">${y}年</td><td style="padding:4px 10px">${n}週排班</td><td style="padding:4px 10px">${settledCount}個月已結算</td></tr>`;
+  }).join('');
+
+  el.innerHTML=`
+    <div style="display:flex;gap:20px;flex-wrap:wrap;margin-bottom:14px">
+      <div><div style="font-size:11px;color:var(--tx3)">資料大小</div><div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace">${kb} KB</div></div>
+      <div><div style="font-size:11px;color:var(--tx3)">localStorage 使用</div><div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace">${lsKb} KB</div><div style="font-size:11px;color:var(--tx3)">上限約 5,000 KB</div></div>
+      <div><div style="font-size:11px;color:var(--tx3)">總週數</div><div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace">${DB.weeks.length}</div></div>
+      <div><div style="font-size:11px;color:var(--tx3)">已結算月份</div><div style="font-size:22px;font-weight:700;font-family:'DM Mono',monospace">${Object.keys(DB.settled).length}</div></div>
+    </div>
+    ${yrRows?`<table style="font-size:13px"><thead><tr><th style="padding:4px 10px">年度</th><th style="padding:4px 10px">排班</th><th style="padding:4px 10px">薪資</th></tr></thead><tbody>${yrRows}</tbody></table>`:''}`;
+}
+
+function previewCleanup(){
+  const yr=parseInt(document.getElementById('cleanup-year')?.value)||2026;
+  const prev=document.getElementById('cleanup-preview');if(!prev)return;
+  // Count weeks before this year
+  const wksBefore=DB.weeks.filter(wk=>parseInt(wk.startDate.substring(0,4))<yr).length;
+  const pksBefore=Object.keys(DB.settled).filter(pk=>parseInt(pk.substring(0,4))<yr).length;
+  const schedKeys=Object.keys(DB.schedule).filter(k=>{
+    // key format: wkIdx-dayIdx-sess-role  — check via week start dates
+    const wkIdx=parseInt(k.split('-')[0]);
+    const wk=DB.weeks[wkIdx];
+    return wk&&parseInt(wk.startDate.substring(0,4))<yr;
+  }).length;
+  if(wksBefore===0&&pksBefore===0){prev.textContent='沒有早於 '+yr+' 年的資料可清除';return;}
+  prev.innerHTML=`將清除 <strong>${wksBefore}</strong> 週排班、<strong>${pksBefore}</strong> 個結算月份（${yr}年以前）`;
+}
+
+// ===================================================
+// EXPORT
+// ===================================================
+function exportData(){
+  const yr=parseInt(document.getElementById('export-year').value);
+  const scope=document.querySelector('input[name="export-scope"]:checked')?.value||'year';
+  let exportObj;
+
+  if(scope==='all'){
+    exportObj={...DB, _exportType:'full', _exportDate:new Date().toISOString()};
+  } else {
+    // Extract year-specific schedule, weeks, settled
+    const yrWeeks=DB.weeks.map((wk,idx)=>({...wk,_origIdx:idx})).filter(wk=>wk.startDate.startsWith(yr+''));
+    const yrWkIdxs=new Set(yrWeeks.map(w=>w._origIdx));
+    const yrSchedule={};
+    Object.keys(DB.schedule).forEach(k=>{
+      const wkIdx=parseInt(k.split('-')[0]);
+      if(yrWkIdxs.has(wkIdx))yrSchedule[k]=DB.schedule[k];
+    });
+    const yrSettled={};
+    Object.keys(DB.settled).forEach(pk=>{if(pk.startsWith(yr+''))yrSettled[pk]=DB.settled[pk];});
+    const yrPayrollAdj={};
+    Object.keys(DB.payrollAdj).forEach(k=>{if(k.startsWith(yr+''))yrPayrollAdj[k]=DB.payrollAdj[k];});
+    const yrPayrollExtra={};
+    Object.keys(DB.payrollExtra).forEach(k=>{if(k.startsWith(yr+''))yrPayrollExtra[k]=DB.payrollExtra[k];});
+
+    exportObj={
+      _exportType:'year', _exportYear:yr, _exportDate:new Date().toISOString(),
+      // Settings (always included for reference)
+      clinics:DB.clinics, doctors:DB.doctors, staff:DB.staff, fees:DB.fees,
+      holidays:DB.holidays.filter(h=>h.date.startsWith(yr+'')),
+      // Year data
+      weeks:yrWeeks.map(w=>{const{_origIdx,...rest}=w;return rest;}),
+      schedule:yrSchedule, settled:yrSettled,
+      payrollAdj:yrPayrollAdj, payrollExtra:yrPayrollExtra,
+    };
+  }
+
+  const json=JSON.stringify(exportObj,null,2);
+  const blob=new Blob([json],{type:'application/json'});
+  const url=URL.createObjectURL(blob);
+  const a=document.createElement('a');
+  const dateStr=new Date().toISOString().substring(0,10);
+  a.href=url;
+  a.download=`牙醫診所備份_${scope==='all'?'全部':yr+'年'}_${dateStr}.json`;
+  a.click();URL.revokeObjectURL(url);
+  toast(`已匯出 ${scope==='all'?'全部資料':yr+'年'}備份`,'s');
+}
+
+// ===================================================
+// IMPORT
+// ===================================================
+function importData(){
+  const file=document.getElementById('import-file').files[0];
+  if(!file){toast('請選擇備份檔案','e');return;}
+  const mode=document.querySelector('input[name="import-mode"]:checked')?.value||'merge';
+  const reader=new FileReader();
+  reader.onload=e=>{
+    let data;
+    try{data=JSON.parse(e.target.result);}catch{toast('無效的 JSON 檔案','e');return;}
+    if(!data._exportType){toast('不是有效的備份檔案','e');return;}
+
+    if(mode==='replace'){
+      if(!confirm('確定要完全取代所有資料嗎？此操作無法還原。'))return;
+      const{_exportType,_exportDate,_exportYear,...rest}=data;
+      Object.assign(DB,rest);
+    } else {
+      // Merge: add clinics/doctors/staff/holidays that don't exist
+      if(data.clinics)data.clinics.forEach(c=>{if(!DB.clinics.find(x=>x.id===c.id))DB.clinics.push(c);});
+      if(data.doctors)data.doctors.forEach(d=>{if(!DB.doctors.find(x=>x.id===d.id))DB.doctors.push(d);});
+      if(data.staff)data.staff.forEach(s=>{if(!DB.staff.find(x=>x.id===s.id))DB.staff.push(s);});
+      if(data.holidays)data.holidays.forEach(h=>{if(!DB.holidays.find(x=>x.date===h.date))DB.holidays.push(h);});
+      // For weeks, append non-duplicate start dates
+      const existingStarts=new Set(DB.weeks.map(w=>w.startDate));
+      if(data.weeks){
+        // Re-index and merge schedule keys
+        const baseWkIdx=DB.weeks.length;
+        data.weeks.forEach((wk,newLocalIdx)=>{
+          if(existingStarts.has(wk.startDate))return;
+          const newGlobalIdx=DB.weeks.length;
+          DB.weeks.push(wk);
+          // Remap schedule keys from newLocalIdx → newGlobalIdx
+          if(data.schedule){
+            Object.keys(data.schedule).forEach(k=>{
+              const parts=k.split('-');
+              if(parseInt(parts[0])===newLocalIdx){
+                parts[0]=String(newGlobalIdx);
+                DB.schedule[parts.join('-')]=data.schedule[k];
+              }
+            });
+          }
+        });
+      }
+      // Merge settled, payrollAdj, payrollExtra (no conflict — period keys are unique)
+      if(data.settled)Object.assign(DB.settled,data.settled);
+      if(data.payrollAdj)Object.assign(DB.payrollAdj,data.payrollAdj);
+      if(data.payrollExtra)Object.assign(DB.payrollExtra,data.payrollExtra);
+    }
+
+    save();
+    renderSched();renderClinicTable();renderDocTable();renderStaffTable();renderHolPage();renderBackupPage();
+    toast(`匯入完成（${mode==='replace'?'完全取代':'合併'}）`,'s');
+  };
+  reader.readAsText(file);
+}
+
+// ===================================================
+// CLEANUP OLD DATA
+// ===================================================
+function cleanupOldData(){
+  const yr=parseInt(document.getElementById('cleanup-year').value);
+  const wksBefore=DB.weeks.filter(wk=>parseInt(wk.startDate.substring(0,4))<yr).length;
+  if(wksBefore===0&&Object.keys(DB.settled).filter(pk=>parseInt(pk.substring(0,4))<yr).length===0){
+    toast('沒有早於 '+yr+' 年的資料','w');return;
+  }
+  if(!confirm(`確定清除 ${yr} 年以前的排班與薪資資料？\n建議先匯出備份。此操作不可還原。`))return;
+
+  // Find week indices to remove
+  const removeIdxs=new Set();
+  DB.weeks.forEach((wk,idx)=>{if(parseInt(wk.startDate.substring(0,4))<yr)removeIdxs.add(idx);});
+
+  // Remove schedule keys for those weeks
+  Object.keys(DB.schedule).forEach(k=>{
+    const wkIdx=parseInt(k.split('-')[0]);
+    if(removeIdxs.has(wkIdx))delete DB.schedule[k];
+  });
+
+  // Remove weeks (rebuild array, remap schedule keys)
+  const newWks=[];const idxMap={};
+  DB.weeks.forEach((wk,oldIdx)=>{
+    if(removeIdxs.has(oldIdx))return;
+    idxMap[oldIdx]=newWks.length;
+    newWks.push(wk);
+  });
+  // Remap schedule keys
+  const newSched={};
+  Object.keys(DB.schedule).forEach(k=>{
+    const parts=k.split('-');
+    const newIdx=idxMap[parseInt(parts[0])];
+    if(newIdx!==undefined){parts[0]=String(newIdx);newSched[parts.join('-')]=DB.schedule[k];}
+  });
+  DB.weeks=newWks;DB.schedule=newSched;
+
+  // Remove settled, payrollAdj, payrollExtra for those years
+  Object.keys(DB.settled).forEach(pk=>{if(parseInt(pk.substring(0,4))<yr)delete DB.settled[pk];});
+  Object.keys(DB.payrollAdj).forEach(k=>{if(parseInt(k.substring(0,4))<yr)delete DB.payrollAdj[k];});
+  Object.keys(DB.payrollExtra).forEach(k=>{if(parseInt(k.substring(0,4))<yr)delete DB.payrollExtra[k];});
+
+  // Adjust curWk if needed
+  if(curWk>=DB.weeks.length)curWk=Math.max(0,DB.weeks.length-1);
+
+  save();renderSched();renderBackupPage();
+  toast(`已清除 ${yr} 年以前的資料`,'s');
+}
+
+// ===================================================
+// SHARED SCHEDULE (GitHub Pages)
+// ===================================================
+function publishSchedule(){
+  const blob=new Blob([JSON.stringify({...DB,_exportType:'full',_exportDate:new Date().toISOString()},null,2)],{type:'application/json'});
+  const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='schedule_data.json';a.click();
+  toast('已下載 schedule_data.json','s');
+}
+function saveGHSettings(){
+  localStorage.setItem('gh_repo',document.getElementById('gh-repo').value.trim());
+  localStorage.setItem('gh_token',document.getElementById('gh-token').value.trim());
+}
+function loadGHSettings(){
+  const r=document.getElementById('gh-repo'),t=document.getElementById('gh-token');
+  if(r)r.value=localStorage.getItem('gh_repo')||'';
+  if(t)t.value=localStorage.getItem('gh_token')||'';
+}
+async function publishToGitHub(){
+  const repo=(document.getElementById('gh-repo').value||'').trim();
+  const token=(document.getElementById('gh-token').value||'').trim();
+  const status=document.getElementById('gh-status');
+  if(!repo||!token){toast('請填寫 Repository 與 Token','e');return;}
+  status.textContent='⏳ 發布中…';status.style.color='var(--tx2)';
+  const json=JSON.stringify({...DB,_exportType:'full',_exportDate:new Date().toISOString()},null,2);
+  // btoa with UTF-8 support
+  const b64=btoa(unescape(encodeURIComponent(json)));
+  const apiUrl=`https://api.github.com/repos/${repo}/contents/schedule_data.json`;
+  const headers={'Authorization':'token '+token,'Accept':'application/vnd.github.v3+json','Content-Type':'application/json'};
+  try{
+    // Get current file SHA (needed for update; skip for new file)
+    let sha;
+    const getR=await fetch(apiUrl,{headers});
+    if(getR.ok){sha=(await getR.json()).sha;}
+    else if(getR.status!==404)throw new Error('GitHub API 錯誤 '+getR.status);
+    // PUT file
+    const body={message:'更新共用班表 '+new Date().toLocaleString('zh-TW'),content:b64};
+    if(sha)body.sha=sha;
+    const putR=await fetch(apiUrl,{method:'PUT',headers,body:JSON.stringify(body)});
+    if(!putR.ok){const e=await putR.json();throw new Error(e.message||putR.status);}
+    const ts=new Date().toLocaleString('zh-TW');
+    status.textContent=`✓ 發布成功！${ts}`;status.style.color='var(--ac)';
+    toast('班表已發布至 GitHub ✓','s');
+  }catch(e){
+    status.textContent='❌ 失敗：'+e.message;status.style.color='var(--rd)';
+    toast('發布失敗：'+e.message,'e');
+  }
+}
+async function loadFromUrl(){
+  const url=document.getElementById('fetch-url').value.trim();
+  const mode=document.querySelector('input[name="fetch-mode"]:checked')?.value||'merge';
+  const status=document.getElementById('fetch-status');
+  if(!url){toast('請輸入網址','e');return;}
+  status.textContent='⏳ 載入中…';status.style.color='var(--tx2)';
+  try{
+    const resp=await fetch(url,{cache:'no-store'});
+    if(!resp.ok)throw new Error('HTTP '+resp.status);
+    const data=await resp.json();
+    if(mode==='replace'){
+      Object.keys(DB).forEach(k=>delete DB[k]);
+    }
+    // Merge: schedule & settled are deeply merged; other arrays/objects replaced if present
+    ['schedule','settled','payrollAdj','payrollExtra'].forEach(k=>{
+      if(data[k])Object.assign(DB[k]||(DB[k]={}),data[k]);
+    });
+    ['clinics','doctors','staff','weeks','holidays'].forEach(k=>{
+      if(data[k]!==undefined)DB[k]=data[k];
+    });
+    ['fees','adminPwHash'].forEach(k=>{if(data[k]!==undefined)DB[k]=data[k];});
+    // Re-run migration
+    load();save();
+    renderSched();renderClinicTable();renderDocTable();renderStaffTable();renderHolPage();
+    const dt=data._exportDate?new Date(data._exportDate).toLocaleString('zh-TW'):'未知';
+    status.textContent=`✓ 載入成功，班表發布時間：${dt}`;status.style.color='var(--ac)';
+    toast('班表已載入 ✓','s');
+  }catch(e){
+    status.textContent='❌ 載入失敗：'+e.message;status.style.color='var(--rd)';
+    toast('載入失敗：'+e.message,'e');
+  }
+}
+
+// ===================================================
+// MOBILE MODE
+// ===================================================
+function toggleViewMode(){
+  const isMobile=document.body.classList.toggle('mobile-mode');
+  localStorage.setItem('dcViewMode',isMobile?'mobile':'desktop');
+  const btn=document.getElementById('viewmode-btn');
+  if(btn)btn.textContent=isMobile?'🖥 電腦版':'📱 手機版';
+}
+function mnavAct(el){
+  document.querySelectorAll('.mob-ni').forEach(b=>b.classList.remove('active'));
+  el.classList.add('active');
+  el.scrollIntoView({block:'nearest',inline:'center'});
+}
+
+// ===================================================
+// PERSONAL SCHEDULE
+// ===================================================
+let msWk=0;
+function initMsPersonSel(){
+  const sel=document.getElementById('ms-person');
+  if(!sel)return;
+  const prev=sel.value;
+  sel.innerHTML='<option value="">— 請選擇 —</option>';
+  if(DB.doctors.length){
+    const og=document.createElement('optgroup');og.label='醫師';
+    DB.doctors.forEach(d=>og.appendChild(new Option(d.name+'（'+d.abbr+'）',d.abbr+'|doc')));
+    sel.appendChild(og);
+  }
+  if(DB.staff.length){
+    const og=document.createElement('optgroup');og.label='助理';
+    DB.staff.forEach(s=>og.appendChild(new Option(s.name+'（'+s.abbr+'）',s.abbr+'|staff')));
+    sel.appendChild(og);
+  }
+  if(prev)sel.value=prev;
+}
+function msWkPrev(){if(msWk>0){msWk--;renderMyShiftGrid();}}
+function msWkNext(){if(msWk<DB.weeks.length-1){msWk++;renderMyShiftGrid();}}
+function renderMyShift(){
+  initMsPersonSel();
+  const sel=document.getElementById('ms-person');
+  const nav=document.getElementById('ms-wknav');
+  const grid=document.getElementById('ms-grid');
+  if(!sel||!sel.value){if(nav)nav.style.display='none';if(grid)grid.innerHTML='';return;}
+  if(msWk>=DB.weeks.length)msWk=Math.max(0,curWk);
+  if(nav)nav.style.display='';
+  renderMyShiftGrid();
+}
+function renderMyShiftGrid(){
+  const sel=document.getElementById('ms-person');
+  if(!sel||!sel.value)return;
+  const[abbr,type]=sel.value.split('|');
+  const wkDef=DB.weeks[msWk];if(!wkDef)return;
+  const dates=wkDates(wkDef.startDate);
+  const ed=new Date(wkDef.startDate);ed.setDate(ed.getDate()+6);
+  document.getElementById('ms-week-label').textContent=
+    `第 ${msWk+1} 週　${wkDef.startDate.replace(/-/g,'/')} ～ ${ed.getMonth()+1}/${ed.getDate()}`;
+
+  function getSlots(di,sess){
+    const slots=[];
+    if(type==='doc'){
+      const docs=getC(msWk,di,sess,'doctors');
+      if(docs.includes(abbr)){
+        const dcm=getDCM(msWk,di,sess);
+        const da=getDA(msWk,di,sess);
+        const clinId=dcm[abbr]||(DB.doctors.find(d=>d.abbr===abbr)?.clinicIds||[])[0];
+        const clin=DB.clinics.find(c=>c.id===clinId);
+        const col=clinId?clinColor(clinId):{bg:'var(--sf2)',border:'var(--bd)',label:'var(--tx2)',chip:'var(--ac3)'};
+        slots.push({clinName:clin?.name||'未指定診所',col,role:'主診醫師',assists:da[abbr]||[]});
+      }
+    } else {
+      const docs=getC(msWk,di,sess,'doctors');
+      const da=getDA(msWk,di,sess);
+      const dcm=getDCM(msWk,di,sess);
+      docs.forEach(docAbbr=>{
+        if((da[docAbbr]||[]).includes(abbr)){
+          const clinId=dcm[docAbbr]||(DB.doctors.find(d=>d.abbr===docAbbr)?.clinicIds||[])[0];
+          const clin=DB.clinics.find(c=>c.id===clinId);
+          const col=clinId?clinColor(clinId):{bg:'var(--sf2)',border:'var(--bd)',label:'var(--tx2)',chip:'var(--ac3)'};
+          slots.push({clinName:clin?.name||'未指定診所',col,role:'跟刀（'+docAbbr+'）'});
+        }
+      });
+      DB.clinics.forEach(clin=>{
+        if(getCC(msWk,di,sess,clin.id).includes(abbr))
+          slots.push({clinName:clin.name,col:clinColor(clin.id),role:'櫃台'});
+        if(getCF(msWk,di,sess,clin.id).includes(abbr))
+          slots.push({clinName:clin.name,col:clinColor(clin.id),role:'流動'});
+      });
+    }
+    return slots;
+  }
+
+  let h='<div class="sgrid">';
+  h+='<div class="shdr"><div class="sdh" style="background:var(--sf2)"></div>';
+  dates.forEach((d,i)=>{
+    const ds=fd(d),ih=isHol(ds),isat=d.getDay()===6,isun=d.getDay()===0;
+    let cls='sdh';if(ih)cls+=' hol';else if(isat)cls+=' sat';else if(isun)cls+=' sun';
+    const hn=ih?`<span style="font-size:9px;display:block;color:var(--hl)">${holName(ds)}</span>`:'';
+    h+=`<div class="${cls}"><span class="dn">${DAYS[i]}${hn}</span><span class="dd">${d.getMonth()+1}/${d.getDate()}</span></div>`;
+  });
+  h+='</div>';
+  SESS.forEach(sess=>{
+    h+=`<div class="ssess"><div class="slbl">${sess}</div>`;
+    dates.forEach((d,di)=>{
+      const ds=fd(d),ih=isHol(ds),iw=isWknd(d);
+      let cls='scell';if(ih)cls+=' hc';else if(iw)cls+=' wc';
+      h+=`<div class="${cls}" style="cursor:default">`;
+      const slots=getSlots(di,sess);
+      if(slots.length){
+        slots.forEach(sl=>{
+          const c=sl.col;
+          h+=`<div style="border:1px solid ${c.border};border-radius:4px;padding:3px 5px;margin-bottom:2px;background:${c.bg}">`;
+          h+=`<div style="font-size:9px;color:${c.label};font-weight:600">${sl.clinName}</div>`;
+          h+=`<div style="font-size:12px;font-weight:700;color:var(--tx)">${sl.role}</div>`;
+          if(sl.assists&&sl.assists.length)h+=`<div style="font-size:10px;color:var(--tx2)">助理：${sl.assists.join('、')}</div>`;
+          h+='</div>';
+        });
+      } else {
+        h+='<span style="color:var(--tx3);font-size:20px;display:block;text-align:center;margin-top:8px">—</span>';
+      }
+      h+='</div>';
+    });
+    h+='</div>';
+  });
+  h+='</div>';
+  document.getElementById('ms-grid').innerHTML=h;
+}
+</script>
+
+<!-- MOBILE BOTTOM NAV -->
+<nav class="mob-nav" id="mob-nav">
+  <div class="mob-nav-inner">
+    <button class="mob-ni active" id="mnav-schedule" onclick="showPage('schedule');mnavAct(this)"><span class="mi">📅</span><span>班表</span></button>
+    <button class="mob-ni" id="mnav-myshift" onclick="showPage('myshift');mnavAct(this)"><span class="mi">👤</span><span>個人班表</span></button>
+    <button class="mob-ni" id="mnav-payroll" onclick="showPage('payroll');mnavAct(this)"><span class="mi">💰</span><span>薪資</span></button>
+    <button class="mob-ni" id="mnav-history" onclick="showPage('history');mnavAct(this)"><span class="mi">📂</span><span>紀錄</span></button>
+    <button class="mob-ni" id="mnav-settings-clinic" onclick="showPage('settings-clinic');mnavAct(this)"><span class="mi">🏥</span><span>診所</span></button>
+    <button class="mob-ni" id="mnav-settings-doctor" onclick="showPage('settings-doctor');mnavAct(this)"><span class="mi">🦷</span><span>醫師</span></button>
+    <button class="mob-ni" id="mnav-settings-staff" onclick="showPage('settings-staff');mnavAct(this)"><span class="mi">👩</span><span>助理</span></button>
+    <button class="mob-ni" id="mnav-settings-backup" onclick="showPage('settings-backup');mnavAct(this)"><span class="mi">💾</span><span>備份</span></button>
+  </div>
+</nav>
+</body>
+</html>
