@@ -392,6 +392,22 @@
       "base": null,
       "pairings": [],
       "deductions": []
+    },
+    {
+      "id": "s1778587559463",
+      "abbr": "ttt",
+      "name": "tt",
+      "clinicIds": [
+        "c1",
+        "c2",
+        "c3"
+      ],
+      "base": null,
+      "bonus": 0,
+      "insCount": 1,
+      "hasIns": false,
+      "pairings": [],
+      "deductions": []
     }
   ],
   "fees": {
@@ -635,7 +651,64 @@
     ],
     "5-0-晚-flt-c2": [],
     "5-0-晚-ctr-c3": [],
-    "5-0-晚-flt-c3": []
+    "5-0-晚-flt-c3": [],
+    "4-0-早-doctors": [
+      "陳",
+      "洪",
+      "賴"
+    ],
+    "4-0-早-dA": {
+      "陳": [
+        "芸",
+        "曼",
+        "燕"
+      ],
+      "洪": [
+        "洪"
+      ],
+      "賴": []
+    },
+    "4-0-早-dcm": {
+      "陳": "c1",
+      "洪": "c1",
+      "賴": "c1"
+    },
+    "4-0-早-counters": [],
+    "4-0-早-floats": [],
+    "4-0-早-ctr-c1": [],
+    "4-0-早-flt-c1": [],
+    "4-0-早-ctr-c2": [],
+    "4-0-早-flt-c2": [],
+    "4-0-早-ctr-c3": [],
+    "4-0-早-flt-c3": [],
+    "4-2-午-doctors": [
+      "商",
+      "李"
+    ],
+    "4-2-午-dA": {
+      "商": [
+        "雯"
+      ],
+      "李": []
+    },
+    "4-2-午-dcm": {
+      "商": "c2",
+      "李": "c3"
+    },
+    "4-2-午-counters": [],
+    "4-2-午-floats": [],
+    "4-2-午-ctr-c1": [],
+    "4-2-午-flt-c1": [],
+    "4-2-午-ctr-c2": [
+      "宜"
+    ],
+    "4-2-午-flt-c2": [],
+    "4-2-午-ctr-c3": [
+      "盈"
+    ],
+    "4-2-午-flt-c3": [
+      "汶"
+    ]
   },
   "weeks": [
     {
@@ -657,10 +730,16 @@
       "startDate": "2026-06-01"
     }
   ],
-  "payrollExtra": {},
+  "payrollExtra": {
+    "2026-05-s1": {
+      "surgeries": 2,
+      "clockMinutes": 10,
+      "notes": ""
+    }
+  },
   "payrollAdj": {},
   "settled": {},
-  "adminPwHash": "",
+  "adminPwHash": "0ffe1abd1a08215353c233d6e009613e95eec4253832a761af28ff37ac5a150c",
   "_exportType": "full",
-  "_exportDate": "2026-05-30T10:30:23.276Z"
+  "_exportDate": "2026-05-30T10:58:28.141Z"
 }
