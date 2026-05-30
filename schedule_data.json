@@ -1,0 +1,666 @@
+{
+  "clinics": [
+    {
+      "id": "c1",
+      "name": "普全診所",
+      "desc": ""
+    },
+    {
+      "id": "c2",
+      "name": "新勝全診所",
+      "desc": ""
+    },
+    {
+      "id": "c3",
+      "name": "愷全診所",
+      "desc": ""
+    }
+  ],
+  "doctors": [
+    {
+      "id": "d1",
+      "abbr": "陳",
+      "name": "陳醫師",
+      "clinicIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "d2",
+      "abbr": "洪",
+      "name": "洪醫師",
+      "clinicIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "d3",
+      "abbr": "賴",
+      "name": "賴醫師",
+      "clinicIds": [
+        "c1"
+      ]
+    },
+    {
+      "id": "d4",
+      "abbr": "王",
+      "name": "王醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d5",
+      "abbr": "徐",
+      "name": "徐醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d6",
+      "abbr": "商",
+      "name": "商醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d7",
+      "abbr": "利",
+      "name": "利醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d8",
+      "abbr": "黃",
+      "name": "黃醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d9",
+      "abbr": "辰",
+      "name": "辰醫師",
+      "clinicIds": [
+        "c2"
+      ]
+    },
+    {
+      "id": "d10",
+      "abbr": "愷",
+      "name": "愷醫師",
+      "clinicIds": [
+        "c3"
+      ]
+    },
+    {
+      "id": "d11",
+      "abbr": "李",
+      "name": "李醫師",
+      "clinicIds": [
+        "c3"
+      ]
+    }
+  ],
+  "staff": [
+    {
+      "id": "s1",
+      "abbr": "愛",
+      "name": "愉愛",
+      "clinicIds": [
+        "c1"
+      ],
+      "insCount": 2,
+      "hasIns": true,
+      "bonus": 10000,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s2",
+      "abbr": "芸",
+      "name": "芸芸",
+      "clinicIds": [
+        "c1"
+      ],
+      "insCount": 3,
+      "hasIns": true,
+      "bonus": 2000,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 16728,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s3",
+      "abbr": "曼",
+      "name": "曼君",
+      "clinicIds": [
+        "c1"
+      ],
+      "insCount": 4,
+      "hasIns": true,
+      "bonus": 4000,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 30912,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s4",
+      "abbr": "茹",
+      "name": "韻茹",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 4000,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 25140,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s5",
+      "abbr": "萱",
+      "name": "育萱",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 3,
+      "hasIns": true,
+      "bonus": 3000,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 12384,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s6",
+      "abbr": "雯",
+      "name": "靖雯",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 3000,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s7",
+      "abbr": "宜",
+      "name": "均宜",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 2,
+      "hasIns": true,
+      "bonus": 1000,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s8",
+      "abbr": "茵",
+      "name": "博茵",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 2,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 24870,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s9",
+      "abbr": "靖",
+      "name": "子靖",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s10",
+      "abbr": "成",
+      "name": "宥成",
+      "clinicIds": [
+        "c2"
+      ],
+      "insCount": 0,
+      "hasIns": false,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s11",
+      "abbr": "妗",
+      "name": "美妗",
+      "clinicIds": [
+        "c3"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s12",
+      "abbr": "惠",
+      "name": "智惠",
+      "clinicIds": [
+        "c3"
+      ],
+      "insCount": 2,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": [
+        {
+          "desc": "員旅6期",
+          "amount": 13626,
+          "periods": 6,
+          "startMonth": "2026-01",
+          "paid": 0
+        }
+      ]
+    },
+    {
+      "id": "s13",
+      "abbr": "芳",
+      "name": "微芳",
+      "clinicIds": [
+        "c3"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s14",
+      "abbr": "盈",
+      "name": "翠盈",
+      "clinicIds": [
+        "c3"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 0,
+      "base": 784,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s15",
+      "abbr": "汶",
+      "name": "汶琪",
+      "clinicIds": [
+        "c3"
+      ],
+      "insCount": 1,
+      "hasIns": true,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s16",
+      "abbr": "洪",
+      "name": "洪助",
+      "clinicIds": [
+        "c1"
+      ],
+      "insCount": 0,
+      "hasIns": false,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    },
+    {
+      "id": "s17",
+      "abbr": "燕",
+      "name": "燕如",
+      "clinicIds": [
+        "c1"
+      ],
+      "insCount": 0,
+      "hasIns": false,
+      "bonus": 0,
+      "base": null,
+      "pairings": [],
+      "deductions": []
+    }
+  ],
+  "fees": {
+    "sessionFee": 790,
+    "holidayMultiple": 1.5,
+    "scalpelFee": 200,
+    "laborInsurance": 738,
+    "healthInsPerPerson": 458,
+    "overtimeRate": 4.5
+  },
+  "holidays": [
+    {
+      "date": "2026-01-01",
+      "name": "元旦"
+    },
+    {
+      "date": "2026-02-17",
+      "name": "農曆除夕"
+    },
+    {
+      "date": "2026-02-18",
+      "name": "農曆初一"
+    },
+    {
+      "date": "2026-02-19",
+      "name": "農曆初二"
+    },
+    {
+      "date": "2026-02-20",
+      "name": "農曆初三"
+    },
+    {
+      "date": "2026-04-04",
+      "name": "兒童節"
+    },
+    {
+      "date": "2026-04-05",
+      "name": "清明節"
+    },
+    {
+      "date": "2026-05-01",
+      "name": "勞動節"
+    },
+    {
+      "date": "2026-06-19",
+      "name": "端午節"
+    },
+    {
+      "date": "2026-09-25",
+      "name": "中秋節"
+    },
+    {
+      "date": "2026-10-10",
+      "name": "國慶日"
+    }
+  ],
+  "schedule": {
+    "5-0-早-doctors": [
+      "洪"
+    ],
+    "5-0-早-dA": {
+      "洪": [
+        "芸",
+        "曼"
+      ]
+    },
+    "5-0-早-dcm": {
+      "洪": "c1"
+    },
+    "5-0-早-counters": [],
+    "5-0-早-floats": [],
+    "5-0-早-ctr-c1": [
+      "洪"
+    ],
+    "5-0-早-flt-c1": [],
+    "5-0-早-ctr-c2": [],
+    "5-0-早-flt-c2": [],
+    "5-0-早-ctr-c3": [],
+    "5-0-早-flt-c3": [],
+    "5-2-午-doctors": [
+      "賴"
+    ],
+    "5-2-午-dA": {
+      "賴": []
+    },
+    "5-2-午-dcm": {
+      "賴": "c1"
+    },
+    "5-2-午-counters": [],
+    "5-2-午-floats": [],
+    "5-2-午-ctr-c1": [
+      "曼",
+      "洪"
+    ],
+    "5-2-午-flt-c1": [
+      "燕"
+    ],
+    "5-2-午-ctr-c2": [],
+    "5-2-午-flt-c2": [],
+    "5-2-午-ctr-c3": [],
+    "5-2-午-flt-c3": [],
+    "5-1-早-doctors": [
+      "商",
+      "黃"
+    ],
+    "5-1-早-dA": {
+      "商": [
+        "雯",
+        "靖"
+      ],
+      "黃": []
+    },
+    "5-1-早-dcm": {
+      "商": "c2",
+      "黃": "c2"
+    },
+    "5-1-早-counters": [],
+    "5-1-早-floats": [],
+    "5-1-早-ctr-c1": [],
+    "5-1-早-flt-c1": [],
+    "5-1-早-ctr-c2": [
+      "宜",
+      "成"
+    ],
+    "5-1-早-flt-c2": [
+      "茵"
+    ],
+    "5-1-早-ctr-c3": [],
+    "5-1-早-flt-c3": [],
+    "5-5-早-doctors": [
+      "李"
+    ],
+    "5-5-早-dA": {
+      "李": [
+        "惠"
+      ]
+    },
+    "5-5-早-dcm": {
+      "李": "c3"
+    },
+    "5-5-早-counters": [],
+    "5-5-早-floats": [],
+    "5-5-早-ctr-c1": [],
+    "5-5-早-flt-c1": [],
+    "5-5-早-ctr-c2": [],
+    "5-5-早-flt-c2": [],
+    "5-5-早-ctr-c3": [],
+    "5-5-早-flt-c3": [
+      "芳"
+    ],
+    "5-4-午-doctors": [
+      "商",
+      "黃"
+    ],
+    "5-4-午-dA": {
+      "商": [
+        "宜"
+      ],
+      "黃": [
+        "靖"
+      ]
+    },
+    "5-4-午-dcm": {
+      "商": "c2",
+      "黃": "c2"
+    },
+    "5-4-午-counters": [],
+    "5-4-午-floats": [],
+    "5-4-午-ctr-c1": [],
+    "5-4-午-flt-c1": [],
+    "5-4-午-ctr-c2": [],
+    "5-4-午-flt-c2": [
+      "成"
+    ],
+    "5-4-午-ctr-c3": [],
+    "5-4-午-flt-c3": [],
+    "5-3-晚-doctors": [
+      "商"
+    ],
+    "5-3-晚-dA": {
+      "商": []
+    },
+    "5-3-晚-dcm": {
+      "商": "c2"
+    },
+    "5-3-晚-counters": [],
+    "5-3-晚-floats": [],
+    "5-3-晚-ctr-c1": [],
+    "5-3-晚-flt-c1": [],
+    "5-3-晚-ctr-c2": [
+      "雯"
+    ],
+    "5-3-晚-flt-c2": [
+      "宜"
+    ],
+    "5-3-晚-ctr-c3": [],
+    "5-3-晚-flt-c3": [],
+    "5-0-午-doctors": [
+      "陳"
+    ],
+    "5-0-午-dA": {
+      "陳": [
+        "愛"
+      ]
+    },
+    "5-0-午-dcm": {
+      "陳": "c1"
+    },
+    "5-0-午-counters": [],
+    "5-0-午-floats": [],
+    "5-0-午-ctr-c1": [
+      "芸"
+    ],
+    "5-0-午-flt-c1": [
+      "曼"
+    ],
+    "5-0-午-ctr-c2": [],
+    "5-0-午-flt-c2": [],
+    "5-0-午-ctr-c3": [],
+    "5-0-午-flt-c3": [],
+    "5-0-晚-doctors": [
+      "商",
+      "利"
+    ],
+    "5-0-晚-dA": {
+      "商": [],
+      "利": [
+        "宜"
+      ]
+    },
+    "5-0-晚-dcm": {
+      "商": "c2",
+      "利": "c2"
+    },
+    "5-0-晚-counters": [],
+    "5-0-晚-floats": [],
+    "5-0-晚-ctr-c1": [],
+    "5-0-晚-flt-c1": [],
+    "5-0-晚-ctr-c2": [
+      "雯"
+    ],
+    "5-0-晚-flt-c2": [],
+    "5-0-晚-ctr-c3": [],
+    "5-0-晚-flt-c3": []
+  },
+  "weeks": [
+    {
+      "startDate": "2026-04-27"
+    },
+    {
+      "startDate": "2026-05-04"
+    },
+    {
+      "startDate": "2026-05-11"
+    },
+    {
+      "startDate": "2026-05-18"
+    },
+    {
+      "startDate": "2026-05-25"
+    },
+    {
+      "startDate": "2026-06-01"
+    }
+  ],
+  "payrollExtra": {},
+  "payrollAdj": {},
+  "settled": {},
+  "adminPwHash": "",
+  "_exportType": "full",
+  "_exportDate": "2026-05-30T10:30:23.276Z"
+}
